@@ -84,13 +84,15 @@ public class ChessPiece {
             }
             case BISHOP -> {
                 BishopMovesCalculator bishopMoves = new BishopMovesCalculator(board, myPosition);
-                return bishopMoves.pieceMoves(board, myPosition);
+                return bishopMoves.pieceMoves();
             }
             case KNIGHT -> {
                 KnightMovesCalculator knightMoves = new KnightMovesCalculator(board, myPosition);
                 return knightMoves.pieceMoves();
             }
             case ROOK -> {
+                RookMovesCalculator rookMoves = new RookMovesCalculator(board, myPosition);
+                return rookMoves.pieceMoves();
             }
             case PAWN -> {
             }

@@ -12,7 +12,7 @@ public class BishopMovesCalculator {
         this.myPosition = myPosition;
     }
 
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public ArrayList<ChessMove> pieceMoves() {
         ArrayList<ChessMove> bishopMoves = new ArrayList<>();
         int i = myPosition.getRow();
         int j = myPosition.getColumn();
