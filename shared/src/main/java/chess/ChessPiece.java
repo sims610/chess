@@ -99,6 +99,8 @@ public class ChessPiece {
                 return rookMoves.pieceMoves();
             }
             case PAWN -> {
+                PawnMovesCalculator pawnMoves = new PawnMovesCalculator(board, myPosition);
+                return pawnMoves.pieceMoves();
             }
         }
         if (piece.getPieceType() == PieceType.BISHOP) {
