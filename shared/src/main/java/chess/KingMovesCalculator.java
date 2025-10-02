@@ -3,14 +3,16 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class KingMovesCalculator {
+class KingMovesCalculator extends MovesCalculator {
     private ChessBoard board;
     private ChessPosition myPosition;
 
     public KingMovesCalculator(ChessBoard board, ChessPosition myPosition) {
+        super(board, myPosition);
         this.board = board;
         this.myPosition = myPosition;
     }
+
 
     public ArrayList<ChessMove> pieceMoves() {
         ArrayList<ChessMove> kingMoves = new ArrayList<>();

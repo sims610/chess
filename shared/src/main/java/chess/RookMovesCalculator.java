@@ -3,11 +3,12 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class RookMovesCalculator {
+class RookMovesCalculator extends MovesCalculator {
     private final ChessBoard board;
     private final ChessPosition myPosition;
 
     public RookMovesCalculator(ChessBoard board, ChessPosition myPosition) {
+        super(board, myPosition);
         this.board = board;
         this.myPosition = myPosition;
     }

@@ -7,11 +7,12 @@ import static chess.ChessGame.TeamColor.WHITE;
 import static chess.ChessPiece.PieceType.*;
 import static chess.ChessPiece.PieceType.BISHOP;
 
-public class PawnMovesCalculator {
+class PawnMovesCalculator extends MovesCalculator {
     private ChessBoard board;
     private ChessPosition myPosition;
 
     public PawnMovesCalculator(ChessBoard board, ChessPosition myPosition) {
+        super(board, myPosition);
         this.board = board;
         this. myPosition = myPosition;
     }
