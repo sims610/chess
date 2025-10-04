@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -33,6 +35,20 @@ public class ChessGame {
         teamTurn = team;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return teamTurn == chessGame.teamTurn && Objects.equals(board, chessGame.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(teamTurn, board);
+    }
+
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
@@ -49,7 +65,13 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ArrayList<ChessMove> legalMoves = new ArrayList<>();
+        ChessPiece myPiece = board.getPiece(startPosition);
+        Collection<ChessMove> allMoves = myPiece.pieceMoves(board, startPosition);
+        for (int i = 0; i < allMoves.size(); i++) {
+            ChessBoard boardCopy = board;
+        }
+        return legalMoves;
     }
 
     /**
@@ -59,7 +81,28 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessBoard newBoard = new ChessBoard();
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPosition endPosition = move.getEndPosition();
+        ChessPiece originalPiece = board.getPiece(startPosition);
+        ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                if (new ChessPosition(i, j).equals(startPosition)) {
+                    newBoard.addPiece(startPosition, null);
+                } else if (new ChessPosition(i, j).equals(endPosition)) {
+                    if (promotionPiece != null) {
+                        newBoard.addPiece(endPosition, new ChessPiece(teamTurn, promotionPiece));
+                    } else {
+                        newBoard.addPiece(endPosition, originalPiece);
+                    }
+                } else {
+                    ChessPiece piece = board.getPiece(new ChessPosition(i, j));
+                    newBoard.addPiece(new ChessPosition(i, j), piece);
+                }
+            }
+        }
+        setBoard(newBoard);
     }
 
     /**
