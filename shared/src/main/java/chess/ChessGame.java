@@ -65,7 +65,8 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessRuleBook rule = new ChessRuleBook();
+        return rule.validMoves(board, startPosition);
     }
 
     /**
@@ -117,7 +118,8 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessRuleBook rule = new ChessRuleBook();
+        return rule.isInCheckmate(board, teamColor);
     }
 
     /**
@@ -128,7 +130,8 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessRuleBook rule = new ChessRuleBook();
+        return rule.isInStalemate(board, teamColor);
     }
 
     /**
