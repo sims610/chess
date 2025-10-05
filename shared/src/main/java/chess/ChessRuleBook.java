@@ -109,7 +109,9 @@ public class ChessRuleBook {
                 }
                 if (piece.getTeamColor() == color) {
                     Collection<ChessMove> potentialMoves = validMoves(board, new ChessPosition(i, j));
-                    if (potentialMoves != null) {
+                    System.out.println("Valid Moves");
+                    System.out.println(potentialMoves);
+                    if (!potentialMoves.isEmpty()) {
                         return false;
                     }
                 }
