@@ -80,7 +80,18 @@ public class ChessGame {
         ChessPosition startPosition = move.getStartPosition();
         ChessPosition endPosition = move.getEndPosition();
         ChessPiece originalPiece = board.getPiece(startPosition);
+        if (originalPiece == null) {
+            throw new InvalidMoveException("There is no piece at starting position");
+        }
+        TeamColor color = originalPiece.getTeamColor();
+        if (color != teamTurn) {
+            throw new InvalidMoveException("Not this Team's turn");
+        }
         ChessPiece.PieceType promotionPiece = move.getPromotionPiece();
+        Collection<ChessMove> moves = validMoves(startPosition);
+        if (!moves.contains(move)) {
+            throw new InvalidMoveException("This move is invalid");
+        }
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
                 if (new ChessPosition(i, j).equals(startPosition)) {
@@ -98,6 +109,11 @@ public class ChessGame {
             }
         }
         setBoard(newBoard);
+        if (color == TeamColor.BLACK) {
+            setTeamTurn(TeamColor.WHITE);
+        } else {
+            setTeamTurn(TeamColor.BLACK);
+        }
     }
 
     /**

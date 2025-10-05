@@ -63,7 +63,6 @@ public class ChessRuleBook {
                 }
                 if (piece.getPieceType() == ChessPiece.PieceType.KING) {
                     if (piece.getTeamColor() == color) {
-                        System.out.println(new ChessPosition(i, j));
                         return new ChessPosition(i, j);
                     }
                 }
@@ -109,8 +108,6 @@ public class ChessRuleBook {
                 }
                 if (piece.getTeamColor() == color) {
                     Collection<ChessMove> potentialMoves = validMoves(board, new ChessPosition(i, j));
-                    System.out.println("Valid Moves");
-                    System.out.println(potentialMoves);
                     if (!potentialMoves.isEmpty()) {
                         return false;
                     }
