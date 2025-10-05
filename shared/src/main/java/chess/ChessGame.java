@@ -65,13 +65,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ArrayList<ChessMove> legalMoves = new ArrayList<>();
-        ChessPiece myPiece = board.getPiece(startPosition);
-        Collection<ChessMove> allMoves = myPiece.pieceMoves(board, startPosition);
-        for (int i = 0; i < allMoves.size(); i++) {
-            ChessBoard boardCopy = board;
-        }
-        return legalMoves;
+        throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -112,7 +106,8 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessRuleBook rule = new ChessRuleBook();
+        return rule.isInCheck(board, teamColor);
     }
 
     /**
