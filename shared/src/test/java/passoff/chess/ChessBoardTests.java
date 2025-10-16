@@ -49,6 +49,7 @@ public class ChessBoardTests extends EqualsTestingUtility<ChessBoard> {
                 "ChessPiece returned by getPiece had the wrong piece type");
         Assertions.assertEquals(piece.getTeamColor(), foundPiece.getTeamColor(),
                 "ChessPiece returned by getPiece had the wrong team color");
+        Assertions.assertEquals(piece, foundPiece);
     }
 
     @Test
