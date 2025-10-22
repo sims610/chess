@@ -19,4 +19,8 @@ public class MemoryUserDAO {
     public void create(UserData userData) {
         userDataList.add(userData);
     }
+
+    public void delete() {
+        userDataList.clear();
+    }
 }

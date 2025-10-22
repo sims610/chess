@@ -12,4 +12,8 @@ public class UserDAO {
     public void create(UserData userData) {
         memoryUserDAO.create(userData);
     }
+
+    public void clear() {
+        memoryUserDAO.delete();
+    }
 }
