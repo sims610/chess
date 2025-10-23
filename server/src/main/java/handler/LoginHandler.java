@@ -5,16 +5,18 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import io.javalin.http.Context;
-
 import model.*;
-import java.util.Map;
 
-public class RegisterHandler {
+public class LoginHandler {
     private final service.UserService userService = new service.UserService();
 
     public String handleRequest(Context ctx, UserDAO userDAO, AuthDAO authDAO) throws DataAccessException {
-        RegisterRequest user = new Gson().fromJson(ctx.body(), RegisterRequest.class);
-        RegisterResult userResult = userService.register(user, userDAO, authDAO);
-        return new Gson().toJson(userResult);
+        LoginRequest login = new Gson().fromJson(ctx.body(), LoginRequest.class);
+        if (login.password() == null || login.username() == null) {
+            throw new DataAccessException(400, "Error: bad request");
+        }
+
+        LoginResult loginResult = userService.login(login, userDAO, authDAO);
+        return new Gson().toJson(loginResult);
     }
 }

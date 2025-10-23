@@ -10,21 +10,52 @@ import java.util.UUID;
 
 public class UserService {
 
-    public RegisterResult register(RegisterRequest registerRequest, UserDAO userDAO) throws DataAccessException {
+    public RegisterResult register(RegisterRequest registerRequest, UserDAO userDAO, AuthDAO authDAO) throws DataAccessException {
         if (getUser(registerRequest.username(), userDAO) == null) {
+            if (registerRequest.password() == null) {
+                throw new DataAccessException(400, "Error: bad request");
+            }
             UserData userData = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
             createUser(userData, userDAO);
             String authToken = UUID.randomUUID().toString();
             AuthData authData = new AuthData(authToken, userData.username());
-            createAuth(authData);
+            createAuth(authData, authDAO);
             return new RegisterResult(registerRequest.username(), authToken);
         } else {
-            throw new DataAccessException("Error: username already taken");
+            throw new DataAccessException(403, "Error: already taken");
         }
     }
 
-//    public LoginResult login(LoginRequest loginRequest) {}
-//    public void logout(LogoutRequest logoutRequest) {}
+    public LoginResult login(LoginRequest loginRequest, UserDAO userDAO, AuthDAO authDAO) throws DataAccessException {
+        UserData userData = getUser(loginRequest.username(), userDAO);
+        if (userData != null) {
+            if (!userData.password().equals(loginRequest.password())) {
+                throw new DataAccessException(401, "Error: unauthorized");
+            }
+            String authToken = UUID.randomUUID().toString();
+            AuthData authData = new AuthData(authToken, userData.username());
+            createAuth(authData, authDAO);
+            return new LoginResult(userData.username(), authToken);
+        }
+        throw new DataAccessException(401, "Error: bad request");
+    }
+
+//    public LogoutResult logout(LogoutRequest logoutRequest, AuthDAO authDAO) throws DataAccessException {
+////        AuthData authData = getAuth(logoutRequest.authToken(), authDAO);
+//        if (authData != null) {
+//            deleteAuth(authData, authDAO);
+//            return new LogoutResult();
+//        }
+//        throw new DataAccessException(401, "Error: unauthorized");
+//    }
+
+    private AuthData getAuth(String authToken, AuthDAO authDAO) {
+        return authDAO.read(authToken);
+    }
+
+    private void deleteAuth(AuthData authData, AuthDAO authDAO) {
+        authDAO.logout(authData);
+    }
 
     private UserData getUser(String username, UserDAO userDAO) {
         return userDAO.read(username);
@@ -34,7 +65,7 @@ public class UserService {
         userDAO.create(userData);
     }
 
-    private void createAuth(AuthData authData) {
-//        AuthDAO.create(authData);
+    private void createAuth(AuthData authData, AuthDAO authDAO) {
+        authDAO.create(authData);
     }
 }

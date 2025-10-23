@@ -8,8 +8,11 @@ import java.util.Map;
  * Indicates there was an error connecting to the database
  */
 public class DataAccessException extends Exception{
-    public DataAccessException(String message) {
+    Integer code;
+
+    public DataAccessException(Integer code, String message) {
         super(message);
+        this.code = code;
     }
     public DataAccessException(String message, Throwable ex) {
         super(message, ex);
@@ -17,5 +20,9 @@ public class DataAccessException extends Exception{
 
     public String toJson() {
         return new Gson().toJson(Map.of("message", getMessage()));
+    }
+
+    public Integer httpStatus() {
+        return code;
     }
 }
