@@ -16,7 +16,7 @@ public class Server {
     public final RegisterHandler registerHandler = new RegisterHandler();
     private final ClearHandler clearHandler = new ClearHandler();
     private final LoginHandler loginHandler = new LoginHandler();
-    private final LogoutHandler logoutHandler = new LogoutHandler();
+    private final CreateGameHandler createGameHandler = new CreateGameHandler();
     private final AuthDAO authDAO = new AuthDAO();
     private final UserDAO userDAO = new UserDAO();
     private final GameDAO gameDAO = new GameDAO();
@@ -28,14 +28,22 @@ public class Server {
         javalin.post("/user", this::registerUser);
         javalin.post("/session", this::loginUser);
         javalin.delete("/session", this::logoutUser);
+        javalin.post("/game", this::createGame);
         javalin.delete("/db", this::clear);
         javalin.exception(DataAccessException.class, this::exceptionHandler);
 
     }
 
+    private void createGame(Context ctx) throws DataAccessException {
+        if (authorized(ctx)) {
+            String createGame = createGameHandler.handleRequest(ctx, gameDAO);
+            ctx.json(createGame);
+        }
+    }
+
     private void logoutUser(Context ctx) throws DataAccessException {
         if (authorized(ctx)) {
-            String authToken = ctx.header("Authorized");
+            String authToken = ctx.header("authorization");
             AuthData authData = authDAO.read(authToken);
             authDAO.logout(authData);
         }
@@ -63,13 +71,10 @@ public class Server {
         ctx.json(ex.toJson());
     }
 
-    private boolean authorized(Context ctx) {
-        String authToken = ctx.header("Authorization");
+    private boolean authorized(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("authorization");
         if (authDAO.read(authToken) == null) {
-            ctx.contentType("application/json");
-            ctx.status(401);
-            ctx.result(new Gson().toJson(Map.of("msg", "invalid authorization")));
-            return false;
+            throw new DataAccessException(401, "Error: unauthorized");
         }
         return true;
     }
