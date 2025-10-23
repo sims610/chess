@@ -1,9 +1,9 @@
 package service;
 
 import dataaccess.GameDAO;
-import model.CreateRequest;
-import model.CreateResult;
-import model.GameData;
+import model.*;
+
+import java.util.ArrayList;
 
 public class GameService {
 
@@ -17,5 +17,12 @@ public class GameService {
         return gameDAO.create(gameName);
     }
 //    JoinResult join(JoinRequest) {}
-//    ListResult list(ListRequest) {}
+    public ListResult list(ListRequest listRequest, GameDAO gameDAO) {
+        ArrayList<GameData> gameDataList = listGames(gameDAO);
+        return new ListResult(gameDataList);
+    }
+
+    private ArrayList<GameData> listGames(GameDAO gameDAO) {
+        return gameDAO.listGames();
+    }
 }

@@ -19,4 +19,8 @@ public class MemoryGameDAO {
         gameDataList.add(gameData);
         return gameData;
     }
+
+    public ArrayList<GameData> listGames() {
+        return gameDataList;
+    }
 }
