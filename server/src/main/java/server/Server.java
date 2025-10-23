@@ -18,6 +18,7 @@ public class Server {
     private final LoginHandler loginHandler = new LoginHandler();
     private final CreateGameHandler createGameHandler = new CreateGameHandler();
     private final ListGameHandler listGameHandler = new ListGameHandler();
+    private final JoinGameHandler joinGameHandler = new JoinGameHandler();
     private final AuthDAO authDAO = new AuthDAO();
     private final UserDAO userDAO = new UserDAO();
     private final GameDAO gameDAO = new GameDAO();
@@ -31,9 +32,23 @@ public class Server {
         javalin.delete("/session", this::logoutUser);
         javalin.post("/game", this::createGame);
         javalin.get("/game", this::listGames);
+        javalin.put("/game", this::joinGame);
         javalin.delete("/db", this::clear);
         javalin.exception(DataAccessException.class, this::exceptionHandler);
 
+    }
+
+    private void joinGame(Context ctx) throws DataAccessException {
+        if (authorized(ctx)) {
+            String username = getUsername(ctx);
+            String joinGame = joinGameHandler.handleRequest(ctx, username, gameDAO);
+            ctx.json(joinGame);
+        }
+    }
+
+    private String getUsername(Context ctx) {
+        AuthData authData = authDAO.read(ctx.header("authorization"));
+        return authData.username();
     }
 
     private void listGames(Context ctx) throws DataAccessException {

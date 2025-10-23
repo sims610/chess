@@ -1,6 +1,8 @@
 package dataaccess;
 
 import model.GameData;
+import model.JoinRequest;
+import model.JoinResult;
 
 import java.util.ArrayList;
 
@@ -17,5 +19,9 @@ public class GameDAO {
 
     public ArrayList<GameData> listGames() {
         return memoryGameDAO.listGames();
+    }
+
+    public JoinResult joinGame(JoinRequest joinRequest, String username) throws DataAccessException {
+        return memoryGameDAO.joinGame(joinRequest, username);
     }
 }

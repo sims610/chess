@@ -1,8 +1,12 @@
 package dataaccess;
 
 import model.GameData;
+import model.JoinRequest;
+import model.JoinResult;
+import model.UserData;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MemoryGameDAO {
@@ -15,12 +19,37 @@ public class MemoryGameDAO {
     public GameData create(String gameName) {
         chess.ChessGame chessGame = new chess.ChessGame();
         Integer gameID = ThreadLocalRandom.current().nextInt(1000, 5000);
-        GameData gameData = new GameData(gameID, "", "", gameName, chessGame);
+        GameData gameData = new GameData(gameID, null, null, gameName, chessGame);
         gameDataList.add(gameData);
         return gameData;
     }
 
     public ArrayList<GameData> listGames() {
         return gameDataList;
+    }
+
+    public JoinResult joinGame(JoinRequest joinRequest, String username) throws DataAccessException {
+        for (GameData gameData : gameDataList) {
+            if (gameData.gameID().equals(joinRequest.gameID())) {
+                GameData updatedGameData;
+                if (Objects.equals(joinRequest.playerColor(), "WHITE")) {
+                    if (gameData.whiteUsername() != null) {
+                        throw new DataAccessException(403, "Error: already taken");
+                    }
+                    updatedGameData = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
+                } else if (Objects.equals(joinRequest.playerColor(), "BLACK")) {
+                    if (gameData.blackUsername() != null) {
+                        throw new DataAccessException(403, "Error: already taken");
+                    }
+                    updatedGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
+                } else {
+                    throw new DataAccessException(400, "Error: tried to join invalid Team Color.");
+                }
+                gameDataList.remove(gameData);
+                gameDataList.add(updatedGameData);
+                return new JoinResult();
+            }
+        }
+        return null;
     }
 }

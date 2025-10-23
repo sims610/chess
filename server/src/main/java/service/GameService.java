@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.*;
 
@@ -16,7 +17,11 @@ public class GameService {
     private GameData createGame(String gameName, GameDAO gameDAO) {
         return gameDAO.create(gameName);
     }
-//    JoinResult join(JoinRequest) {}
+
+    public JoinResult join(JoinRequest joinRequest, String username, GameDAO gameDAO) throws DataAccessException {
+        return joinGame(joinRequest, username, gameDAO);
+    }
+
     public ListResult list(ListRequest listRequest, GameDAO gameDAO) {
         ArrayList<GameData> gameDataList = listGames(gameDAO);
         return new ListResult(gameDataList);
@@ -24,5 +29,13 @@ public class GameService {
 
     private ArrayList<GameData> listGames(GameDAO gameDAO) {
         return gameDAO.listGames();
+    }
+
+    private JoinResult joinGame(JoinRequest joinRequest, String username, GameDAO gameDAO) throws DataAccessException {
+        JoinResult joinresult =  gameDAO.joinGame(joinRequest, username);
+        if (joinresult == null) {
+            throw new DataAccessException(400, "Error: bad request");
+        }
+        return joinresult;
     }
 }
