@@ -11,8 +11,8 @@ import service.ClearService;
 public class ClearHandler {
     private final service.ClearService clearService = new service.ClearService();
 
-    public String handleRequest() throws DataAccessException {
-        ClearResult clearResult = clearService.clear();
+    public String handleRequest(RegisterHandler registerHandler) throws DataAccessException {
+        ClearResult clearResult = clearService.clear(registerHandler);
         return new Gson().toJson(clearResult);
     }
 }

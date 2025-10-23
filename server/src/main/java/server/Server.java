@@ -1,7 +1,6 @@
 package server;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import handler.*;
 import io.javalin.*;
 import io.javalin.http.Context;
@@ -9,8 +8,11 @@ import io.javalin.http.Context;
 public class Server {
 
     private final Javalin javalin;
-    private final RegisterHandler registerHandler = new RegisterHandler();
+    public final RegisterHandler registerHandler = new RegisterHandler();
     private final ClearHandler clearHandler = new ClearHandler();
+    private final AuthDAO authDAO = new AuthDAO();
+    private final UserDAO userDAO = new UserDAO();
+    private final GameDAO gameDAO = new GameDAO();
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
@@ -23,12 +25,12 @@ public class Server {
     }
 
     private void registerUser(Context ctx) throws DataAccessException {
-        String register = registerHandler.handleRequest(ctx);
+        String register = registerHandler.handleRequest(ctx, userDAO);
         ctx.json(register);
     }
 
     private void clear(Context ctx) throws DataAccessException {
-        String clear = clearHandler.handleRequest();
+        String clear = clearHandler.handleRequest(registerHandler);
         ctx.json(clear);
     }
 
