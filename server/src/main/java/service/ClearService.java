@@ -8,11 +8,8 @@ import handler.RegisterHandler;
 import model.ClearResult;
 
 public class ClearService {
-    private static UserDAO userDAO = new UserDAO();
-    private static GameDAO gameDAO = new GameDAO();
-    private static AuthDAO authDAO = new AuthDAO();
 
-    public ClearResult clear(RegisterHandler registerHandler) throws DataAccessException {
+    public ClearResult clear(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO) throws DataAccessException {
         userDAO.clear();
         gameDAO.clear();
         authDAO.clear();

@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.Gson;
 import dataaccess.*;
 import handler.*;
 import io.javalin.*;
@@ -30,12 +31,13 @@ public class Server {
     }
 
     private void clear(Context ctx) throws DataAccessException {
-        String clear = clearHandler.handleRequest(registerHandler);
+        String clear = clearHandler.handleRequest(userDAO, authDAO, gameDAO);
         ctx.json(clear);
     }
 
     private void exceptionHandler(DataAccessException ex, Context ctx) {
         ctx.status(403);
+        ctx.json(ex.toJson());
     }
 
     public int run(int desiredPort) {
