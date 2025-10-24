@@ -16,7 +16,10 @@ public class MemoryUserDAO {
         return null;
     }
 
-    public void create(UserData userData) {
+    public void create(UserData userData) throws DataAccessException {
+        if (userData.username() == null || userData.password() == null || userData.email() == null) {
+            throw new DataAccessException(400, "Error: bad request");
+        }
         userDataList.add(userData);
     }
 

@@ -24,4 +24,8 @@ public class GameDAO {
     public JoinResult joinGame(JoinRequest joinRequest, String username) throws DataAccessException {
         return memoryGameDAO.joinGame(joinRequest, username);
     }
+
+    public GameData read(Integer gameID) {
+        return memoryGameDAO.read(gameID);
+    }
 }

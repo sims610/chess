@@ -40,14 +40,14 @@ public class UserService {
         throw new DataAccessException(401, "Error: bad request");
     }
 
-//    public LogoutResult logout(LogoutRequest logoutRequest, AuthDAO authDAO) throws DataAccessException {
-////        AuthData authData = getAuth(logoutRequest.authToken(), authDAO);
-//        if (authData != null) {
-//            deleteAuth(authData, authDAO);
-//            return new LogoutResult();
-//        }
-//        throw new DataAccessException(401, "Error: unauthorized");
-//    }
+    public LogoutResult logout(LogoutRequest logoutRequest, AuthDAO authDAO) throws DataAccessException {
+        AuthData authData = authDAO.read(logoutRequest.authToken());
+        if (authData == null) {
+            throw new DataAccessException(400, "Error: bad request");
+        }
+        deleteAuth(authData, authDAO);
+        return new LogoutResult();
+    }
 
     private AuthData getAuth(String authToken, AuthDAO authDAO) {
         return authDAO.read(authToken);
@@ -61,7 +61,7 @@ public class UserService {
         return userDAO.read(username);
     }
 
-    private void createUser(UserData userData, UserDAO userDAO) {
+    private void createUser(UserData userData, UserDAO userDAO) throws DataAccessException {
         userDAO.create(userData);
     }
 

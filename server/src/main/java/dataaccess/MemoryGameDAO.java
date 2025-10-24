@@ -52,4 +52,13 @@ public class MemoryGameDAO {
         }
         return null;
     }
+
+    public GameData read(Integer gameID) {
+        for (GameData gameData : gameDataList) {
+            if (gameData.gameID().equals(gameID)) {
+                return gameData;
+            }
+        }
+        return null;
+    }
 }

@@ -9,7 +9,7 @@ public class UserDAO {
         return memoryUserDAO.read(username);
     }
 
-    public void create(UserData userData) {
+    public void create(UserData userData) throws DataAccessException {
         memoryUserDAO.create(userData);
     }
 

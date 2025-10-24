@@ -8,8 +8,11 @@ import java.util.ArrayList;
 
 public class GameService {
 
-    public CreateResult create(CreateRequest createRequest, GameDAO gameDAO) {
+    public CreateResult create(CreateRequest createRequest, GameDAO gameDAO) throws DataAccessException {
         String gameName = createRequest.gameName();
+        if (gameName == null) {
+            throw new DataAccessException(400, "bad request");
+        }
         GameData gameData = createGame(gameName, gameDAO);
         return new CreateResult(gameData.gameID());
     }
