@@ -1,69 +1,67 @@
 package chess;
 
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 
-class KnightMovesCalculator extends MovesCalculator {
-    private ChessBoard board;
-    private ChessPosition myPosition;
+public class KnightMovesCalculator {
+    private final ChessBoard board;
+    private final ChessPosition myPosition;
+    private final int row;
+    private final int col;
+    ArrayList<ChessMove> knightMoves = new ArrayList<>();
 
     public KnightMovesCalculator(ChessBoard board, ChessPosition myPosition) {
-        super(board, myPosition);
         this.board = board;
         this.myPosition = myPosition;
+        row = myPosition.getRow();
+        col = myPosition.getColumn();
     }
 
     public Collection<ChessMove> pieceMoves() {
-        int row = myPosition.getRow();
-        int col = myPosition.getColumn();
-        ArrayList<ChessMove> knightMoves = new ArrayList<>();
-        if (inBounds(knightMoves, row+2, col-1)) {
-            knightMoves.add(new ChessMove(myPosition, new ChessPosition(row+2, col-1), null));
-        }
-        if (inBounds(knightMoves, row+2, col+1)) {
-            knightMoves.add(new ChessMove(myPosition, new ChessPosition(row+2, col+1), null));
-        }
-        if (inBounds(knightMoves, row+1, col+2)) {
-            knightMoves.add(new ChessMove(myPosition, new ChessPosition(row+1, col+2), null));
-        }
-        if (inBounds(knightMoves, row-1, col+2)) {
-            knightMoves.add(new ChessMove(myPosition, new ChessPosition(row-1, col+2), null));
-        }
-        if (inBounds(knightMoves, row-2, col+1)) {
-            knightMoves.add(new ChessMove(myPosition, new ChessPosition(row-2, col+1), null));
-        }
-        if (inBounds(knightMoves, row-2, col-1)) {
-            knightMoves.add(new ChessMove(myPosition, new ChessPosition(row-2, col-1), null));
-        }
-        if (inBounds(knightMoves, row-1, col-2)) {
-            knightMoves.add(new ChessMove(myPosition, new ChessPosition(row-1, col-2), null));
-        }
-        if (inBounds(knightMoves, row+1, col-2)) {
-            knightMoves.add(new ChessMove(myPosition, new ChessPosition(row+1, col-2), null));
-        }
+        tryAndAddMove(row + 2, col - 1);
+        tryAndAddMove(row + 2, col + 1);
+        tryAndAddMove(row + 1, col - 2);
+        tryAndAddMove(row + 1, col + 2);
+        tryAndAddMove(row -1, col - 2);
+        tryAndAddMove(row -1, col + 2);
+        tryAndAddMove(row - 2, col - 1);
+        tryAndAddMove(row - 2, col + 1);
         return knightMoves;
     }
 
-    Boolean inBounds(Collection<ChessMove> knightMoves, int row, int col) {
-        int min = 1;
-        int max = 8;
-        if(min <= row && row <= max) {
-            if (min <= col && col <= max) {
-                return isValid(knightMoves, row, col);
+    private void tryAndAddMove(int i, int j) {
+        if (inBounds(i, j)) {
+            if (isEmpty(i, j)) {
+                knightMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
+            } else if (canCapture(i, j)) {
+                knightMoves.add(new ChessMove(myPosition, new ChessPosition(i, j), null));
             }
-        } else {
-            return false;
+        }
+    }
+
+    private boolean canCapture(int i, int j) {
+        ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j));
+        ChessPiece myPiece = board.getPiece(myPosition);
+        if (myPiece.getTeamColor() != otherPiece.getTeamColor()) {
+            return true;
         }
         return false;
     }
 
-    Boolean isValid(Collection<ChessMove> knightMoves, int row, int col) {
-        if (board.getPiece(new ChessPosition(row, col)) != null) {
-            if (board.getPiece(new ChessPosition(row, col)).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                knightMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), null));
-                return false;
-            } else return false;
+    private boolean isEmpty(int i, int j) {
+        if (board.getPiece(new ChessPosition(i, j)) == null) {
+            return true;
         }
-        return true;
+        return false;
+    }
+
+
+    private boolean inBounds(int i, int j) {
+        if (i > 0 && i < 9) {
+            if (j > 0 && j < 9) {
+                return true;
+            }
+        }
+        return false;
     }
 }

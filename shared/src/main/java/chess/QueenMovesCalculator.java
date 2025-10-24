@@ -13,15 +13,12 @@ class QueenMovesCalculator extends MovesCalculator {
         this.myPosition = myPosition;
     }
 
-
-    public ArrayList<ChessMove> pieceMoves() {
-        ArrayList<ChessMove> queenMoves = new ArrayList<>();
-        BishopMovesCalculator bishopCalc = new BishopMovesCalculator(board, myPosition);
-        RookMovesCalculator rookCalc = new RookMovesCalculator(board, myPosition);
-        Collection<ChessMove> bishopMoves = bishopCalc.pieceMoves();
-        Collection<ChessMove> rookMoves = rookCalc.pieceMoves();
-        queenMoves.addAll(bishopMoves);
-        queenMoves.addAll(rookMoves);
+    public Collection<ChessMove> pieceMoves() {
+        RookMovesCalculator rookMoves = new RookMovesCalculator(board, myPosition);
+        BishopMovesCalculator bishopMoves = new BishopMovesCalculator(board, myPosition);
+        Collection<ChessMove> queenMoves = new ArrayList<>();
+        queenMoves.addAll(rookMoves.pieceMoves());
+        queenMoves.addAll(bishopMoves.pieceMoves());
         return queenMoves;
     }
 }
