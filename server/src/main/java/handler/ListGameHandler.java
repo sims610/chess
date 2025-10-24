@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import io.javalin.http.Context;
-import model.ListRequest;
-import model.ListResult;
+import model.RequestResult.ListRequest;
+import model.RequestResult.ListResult;
 
 public class ListGameHandler {
     private final service.GameService gameService = new service.GameService();

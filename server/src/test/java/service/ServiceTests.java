@@ -1,6 +1,7 @@
 package service;
 
 import model.*;
+import model.RequestResult.*;
 import org.junit.jupiter.api.*;
 import passoff.model.*;
 import dataaccess.*;

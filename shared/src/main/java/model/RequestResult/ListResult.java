@@ -1,4 +1,6 @@
-package model;
+package model.RequestResult;
+
+import model.GameData;
 
 import java.util.ArrayList;
 

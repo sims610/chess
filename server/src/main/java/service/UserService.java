@@ -3,8 +3,8 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
-import io.javalin.http.UseProxyResponse;
 import model.*;
+import model.RequestResult.*;
 
 import java.util.UUID;
 
