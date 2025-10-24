@@ -49,10 +49,6 @@ public class UserService {
         return new LogoutResult();
     }
 
-    private AuthData getAuth(String authToken, AuthDAO authDAO) {
-        return authDAO.read(authToken);
-    }
-
     private void deleteAuth(AuthData authData, AuthDAO authDAO) {
         authDAO.logout(authData);
     }
