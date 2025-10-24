@@ -3,7 +3,7 @@ package service;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import model.*;
-import model.RequestResult.*;
+import model.requestresult.*;
 
 import java.util.ArrayList;
 

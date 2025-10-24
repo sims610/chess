@@ -1,8 +1,8 @@
 package dataaccess;
 
 import model.GameData;
-import model.RequestResult.JoinRequest;
-import model.RequestResult.JoinResult;
+import model.requestresult.JoinRequest;
+import model.requestresult.JoinResult;
 
 import java.util.ArrayList;
 

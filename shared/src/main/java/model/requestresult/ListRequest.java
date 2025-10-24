@@ -1,4 +1,4 @@
-package model.RequestResult;
+package model.requestresult;
 
 public record ListRequest() {
 }

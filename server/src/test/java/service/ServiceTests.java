@@ -1,7 +1,7 @@
 package service;
 
 import model.*;
-import model.RequestResult.*;
+import model.requestresult.*;
 import org.junit.jupiter.api.*;
 import passoff.model.*;
 import dataaccess.*;
@@ -40,7 +40,7 @@ public class ServiceTests {
 
 
     @Test
-    public void RegisterServicePasses() throws DataAccessException {
+    public void registerServicePasses() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
         RegisterResult registerResult = userService.register(registerRequest, userDAO, authDAO);
         UserData userData = userDAO.read(newUser.getUsername());
@@ -54,7 +54,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void RegisterAlreadyRegisteredClient() throws DataAccessException {
+    public void registerAlreadyRegisteredClient() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
         userService.register(registerRequest, userDAO, authDAO);
         Assertions.assertThrows(DataAccessException.class, () -> {
@@ -63,7 +63,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void LoginServiceSuccess() throws DataAccessException {
+    public void loginServiceSuccess() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
         userService.register(registerRequest, userDAO, authDAO);
         LoginRequest loginRequest = new LoginRequest(newUser.getUsername(), newUser.getPassword());
@@ -76,7 +76,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void LoginServiceFails() {
+    public void loginServiceFails() {
         LoginRequest loginRequest = new LoginRequest(newUser.getUsername(), newUser.getPassword());
         Assertions.assertThrows(DataAccessException.class, () -> {
             userService.login(loginRequest, userDAO, authDAO);
@@ -84,7 +84,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void LogoutServiceSuccess() throws DataAccessException {
+    public void logoutServiceSuccess() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
         RegisterResult registerResult = userService.register(registerRequest, userDAO, authDAO);
         LogoutRequest logoutRequest = new LogoutRequest(registerResult.authToken());
@@ -95,7 +95,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void LogoutServiceFails() {
+    public void logoutServiceFails() {
         LogoutRequest logoutRequest = new LogoutRequest("fake-auth-token1234");
         Assertions.assertThrows(DataAccessException.class, () -> {
             userService.logout(logoutRequest, authDAO);
@@ -103,7 +103,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void CreateGameSuccess() throws DataAccessException {
+    public void createGameSuccess() throws DataAccessException {
         CreateRequest createRequest = new CreateRequest("newGame");
         CreateResult createResult = gameService.create(createRequest, gameDAO);
         ArrayList<GameData> gameDataList = gameDAO.listGames();
@@ -112,7 +112,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void CreateGameFails() {
+    public void createGameFails() {
         CreateRequest createRequest = new CreateRequest(null);
         Assertions.assertThrows(DataAccessException.class, () -> {
             gameService.create(createRequest, gameDAO);
@@ -120,7 +120,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void ListGamesSuccess() throws DataAccessException {
+    public void listGamesSuccess() throws DataAccessException {
         CreateRequest createRequest = new CreateRequest("newGame");
         CreateRequest createRequest1 = new CreateRequest("fun");
         CreateRequest createRequest2 = new CreateRequest("newGame3");
@@ -132,7 +132,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void JoinGameSuccess() throws DataAccessException {
+    public void joinGameSuccess() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
         userService.register(registerRequest, userDAO, authDAO);
         CreateRequest createRequest = new CreateRequest("newGame");
@@ -157,7 +157,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void ClearSuccess() throws DataAccessException {
+    public void clearSuccess() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
         RegisterResult registerResult = userService.register(registerRequest, userDAO, authDAO);
         CreateRequest createRequest = new CreateRequest("newGame");

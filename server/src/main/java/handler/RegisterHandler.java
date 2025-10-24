@@ -6,8 +6,8 @@ import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 import io.javalin.http.Context;
 
-import model.RequestResult.RegisterRequest;
-import model.RequestResult.RegisterResult;
+import model.requestresult.RegisterRequest;
+import model.requestresult.RegisterResult;
 
 public class RegisterHandler {
     private final service.UserService userService = new service.UserService();

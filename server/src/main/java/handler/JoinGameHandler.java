@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import io.javalin.http.Context;
-import model.RequestResult.JoinRequest;
-import model.RequestResult.JoinResult;
+import model.requestresult.JoinRequest;
+import model.requestresult.JoinResult;
 
 public class JoinGameHandler {
     private final service.GameService gameService = new service.GameService();
