@@ -61,8 +61,8 @@ class KnightMovesCalculator extends MovesCalculator {
         if (board.getPiece(new ChessPosition(row, col)) != null) {
             if (board.getPiece(new ChessPosition(row, col)).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                 knightMoves.add(new ChessMove(myPosition, new ChessPosition(row, col), null));
-                return false;
-            } else return false;
+            }
+            return false;
         }
         return true;
     }

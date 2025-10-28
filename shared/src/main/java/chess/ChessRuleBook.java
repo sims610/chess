@@ -71,7 +71,6 @@ public class ChessRuleBook {
         return null;
     }
 
-
     Boolean isInCheck(ChessBoard board, ChessGame.TeamColor color) {
         // find the King of the team we are checking
         ChessPosition kingPosition = findKing(board, color);
