@@ -19,9 +19,9 @@ public class Server {
     private final CreateGameHandler createGameHandler = new CreateGameHandler();
     private final ListGameHandler listGameHandler = new ListGameHandler();
     private final JoinGameHandler joinGameHandler = new JoinGameHandler();
-    private final AuthDAO authDAO = new AuthDAO();
-    private final UserDAO userDAO = new UserDAO();
-    private final GameDAO gameDAO = new GameDAO();
+    private final AuthDAO authDAO = new MemoryAuthDAO();
+    private final UserDAO userDAO = new MemoryUserDAO();
+    private final GameDAO gameDAO = new MemoryGameDAO();
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));

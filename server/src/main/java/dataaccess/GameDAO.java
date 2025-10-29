@@ -6,26 +6,15 @@ import model.requestresult.JoinResult;
 
 import java.util.ArrayList;
 
-public class GameDAO {
-    private final MemoryGameDAO memoryGameDAO = new MemoryGameDAO();
+public interface GameDAO {
 
-    public void clear() {
-        memoryGameDAO.delete();
-    }
+    void clear();
 
-    public GameData create(String gameName) {
-        return memoryGameDAO.create(gameName);
-    }
+    GameData create(String gameName);
 
-    public ArrayList<GameData> listGames() {
-        return memoryGameDAO.listGames();
-    }
+    ArrayList<GameData> listGames();
 
-    public JoinResult joinGame(JoinRequest joinRequest, String username) throws DataAccessException {
-        return memoryGameDAO.joinGame(joinRequest, username);
-    }
+    JoinResult joinGame(JoinRequest joinRequest, String username) throws DataAccessException;
 
-    public GameData read(Integer gameID) {
-        return memoryGameDAO.read(gameID);
-    }
+    GameData read(Integer gameID);
 }

@@ -2,18 +2,11 @@ package dataaccess;
 
 import model.*;
 
-public class UserDAO {
-    private final MemoryUserDAO memoryUserDAO = new MemoryUserDAO();
+public interface UserDAO {
 
-    public UserData read(String username) {
-        return memoryUserDAO.read(username);
-    }
+    UserData read(String username);
 
-    public void create(UserData userData) throws DataAccessException {
-        memoryUserDAO.create(userData);
-    }
+    void create(UserData userData) throws DataAccessException;
 
-    public void clear() {
-        memoryUserDAO.delete();
-    }
+    void clear();
 }

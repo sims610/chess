@@ -21,9 +21,9 @@ public class ServiceTests {
 
     @BeforeAll
     public static void init() {
-        authDAO = new AuthDAO();
-        userDAO = new UserDAO();
-        gameDAO = new GameDAO();
+        authDAO = new MemoryAuthDAO();
+        userDAO = new MemoryUserDAO();
+        gameDAO = new MemoryGameDAO();
 
         newUser = new TestUser("NewUser", "newUserPassword", "nu@mail.com");
         userService = new UserService();
@@ -33,9 +33,9 @@ public class ServiceTests {
 
     @AfterEach
     public void cleanup() {
-        authDAO = new AuthDAO();
-        userDAO = new UserDAO();
-        gameDAO = new GameDAO();
+        authDAO = new MemoryAuthDAO();
+        userDAO = new MemoryUserDAO();
+        gameDAO = new MemoryGameDAO();
     }
 
 

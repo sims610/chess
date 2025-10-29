@@ -2,22 +2,13 @@ package dataaccess;
 
 import model.AuthData;
 
-public class AuthDAO {
-    MemoryAuthDAO memoryAuthDAO = new MemoryAuthDAO();
+public interface AuthDAO {
 
-    public void clear() {
-        memoryAuthDAO.delete();
-    }
+    void clear();
 
-    public void logout(AuthData authData) {
-        memoryAuthDAO.logout(authData);
-    }
+    void logout(AuthData authData);
 
-    public AuthData read(String authToken) {
-        return memoryAuthDAO.read(authToken);
-    }
+    AuthData read(String authToken);
 
-    public void create(AuthData authData) {
-        memoryAuthDAO.create(authData);
-    }
+    void create(AuthData authData);
 }
