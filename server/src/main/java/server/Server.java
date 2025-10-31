@@ -20,7 +20,7 @@ public class Server {
     private final ListGameHandler listGameHandler = new ListGameHandler();
     private final JoinGameHandler joinGameHandler = new JoinGameHandler();
     private final AuthDAO authDAO = new MySQLAuthDAO();
-    private final UserDAO userDAO = new MemoryUserDAO();
+    private final UserDAO userDAO = new MySQLUserDAO();
     private final GameDAO gameDAO = new MemoryGameDAO();
 
     public Server() {

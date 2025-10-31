@@ -4,9 +4,9 @@ import model.*;
 
 public interface UserDAO {
 
-    UserData read(String username);
+    UserData read(String username) throws DataAccessException;
 
     void create(UserData userData) throws DataAccessException;
 
-    void clear();
+    void clear() throws DataAccessException;
 }

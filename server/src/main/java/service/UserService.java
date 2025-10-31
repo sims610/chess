@@ -53,7 +53,7 @@ public class UserService {
         authDAO.logout(authData);
     }
 
-    private UserData getUser(String username, UserDAO userDAO) {
+    private UserData getUser(String username, UserDAO userDAO) throws DataAccessException {
         return userDAO.read(username);
     }
 
