@@ -5,7 +5,7 @@ import model.UserData;
 
 import java.util.ArrayList;
 
-public class MemoryAuthDAO implements AuthDAO {
+public class  MemoryAuthDAO implements AuthDAO {
     ArrayList<AuthData> authDataList = new ArrayList<>();
 
     @Override

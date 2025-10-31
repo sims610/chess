@@ -4,11 +4,11 @@ import model.AuthData;
 
 public interface AuthDAO {
 
-    void clear();
+    void clear() throws DataAccessException;
 
-    void logout(AuthData authData);
+    void logout(AuthData authData) throws DataAccessException;
 
-    AuthData read(String authToken);
+    AuthData read(String authToken) throws DataAccessException;
 
-    void create(AuthData authData);
+    void create(AuthData authData) throws DataAccessException;
 }

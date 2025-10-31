@@ -49,7 +49,7 @@ public class UserService {
         return new LogoutResult();
     }
 
-    private void deleteAuth(AuthData authData, AuthDAO authDAO) {
+    private void deleteAuth(AuthData authData, AuthDAO authDAO) throws DataAccessException {
         authDAO.logout(authData);
     }
 
@@ -61,7 +61,7 @@ public class UserService {
         userDAO.create(userData);
     }
 
-    private void createAuth(AuthData authData, AuthDAO authDAO) {
+    private void createAuth(AuthData authData, AuthDAO authDAO) throws DataAccessException {
         authDAO.create(authData);
     }
 }

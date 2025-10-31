@@ -19,7 +19,7 @@ public class Server {
     private final CreateGameHandler createGameHandler = new CreateGameHandler();
     private final ListGameHandler listGameHandler = new ListGameHandler();
     private final JoinGameHandler joinGameHandler = new JoinGameHandler();
-    private final AuthDAO authDAO = new MemoryAuthDAO();
+    private final AuthDAO authDAO = new MySQLAuthDAO();
     private final UserDAO userDAO = new MemoryUserDAO();
     private final GameDAO gameDAO = new MemoryGameDAO();
 
@@ -35,10 +35,14 @@ public class Server {
         javalin.put("/game", this::joinGame);
         javalin.delete("/db", this::clear);
         javalin.exception(DataAccessException.class, this::exceptionHandler);
+    }
 
+    private void startDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
     }
 
     private void joinGame(Context ctx) throws DataAccessException {
+        startDatabase();
         if (authorized(ctx)) {
             String username = getUsername(ctx);
             String joinGame = joinGameHandler.handleRequest(ctx, username, gameDAO);
@@ -46,7 +50,7 @@ public class Server {
         }
     }
 
-    private String getUsername(Context ctx) {
+    private String getUsername(Context ctx) throws DataAccessException {
         AuthData authData = authDAO.read(ctx.header("authorization"));
         return authData.username();
     }
@@ -76,11 +80,13 @@ public class Server {
     }
 
     private void loginUser(Context ctx) throws DataAccessException {
+        startDatabase();
         String login = loginHandler.handleRequest(ctx, userDAO, authDAO);
         ctx.json(login);
     }
 
     private void registerUser(Context ctx) throws DataAccessException {
+        startDatabase();
         String register = registerHandler.handleRequest(ctx, userDAO, authDAO);
         ctx.json(register);
     }
@@ -96,6 +102,7 @@ public class Server {
     }
 
     private boolean authorized(Context ctx) throws DataAccessException {
+        startDatabase();
         String authToken = ctx.header("authorization");
         if (authDAO.read(authToken) == null) {
             throw new DataAccessException(401, "Error: unauthorized");
