@@ -18,7 +18,7 @@ public class GameService {
         return new CreateResult(gameData.gameID());
     }
 
-    private GameData createGame(String gameName, GameDAO gameDAO) {
+    private GameData createGame(String gameName, GameDAO gameDAO) throws DataAccessException {
         return gameDAO.create(gameName);
     }
 
@@ -26,12 +26,12 @@ public class GameService {
         return joinGame(joinRequest, username, gameDAO);
     }
 
-    public ListResult list(ListRequest listRequest, GameDAO gameDAO) {
+    public ListResult list(ListRequest listRequest, GameDAO gameDAO) throws DataAccessException {
         ArrayList<GameData> gameDataList = listGames(gameDAO);
         return new ListResult(gameDataList);
     }
 
-    private ArrayList<GameData> listGames(GameDAO gameDAO) {
+    private ArrayList<GameData> listGames(GameDAO gameDAO) throws DataAccessException {
         return gameDAO.listGames();
     }
 

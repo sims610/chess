@@ -21,7 +21,7 @@ public class Server {
     private final JoinGameHandler joinGameHandler = new JoinGameHandler();
     private final AuthDAO authDAO = new MySQLAuthDAO();
     private final UserDAO userDAO = new MySQLUserDAO();
-    private final GameDAO gameDAO = new MemoryGameDAO();
+    private final GameDAO gameDAO = new MySQLGameDAO();
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
