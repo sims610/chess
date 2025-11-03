@@ -43,7 +43,7 @@ public class ServiceTests {
     public void registerServicePasses() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest(newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
         RegisterResult registerResult = userService.register(registerRequest, userDAO, authDAO);
-        UserData userData = userDAO.read(newUser.getUsername());
+        UserData userData = userDAO.read(newUser.getUsername(), newUser.getPassword());
         AuthData authData = authDAO.read(registerResult.authToken());
 
         Assertions.assertNotNull(userData);
@@ -164,7 +164,7 @@ public class ServiceTests {
         gameService.create(createRequest, gameDAO);
         clearService.clear(userDAO, authDAO, gameDAO);
 
-        Assertions.assertNull(userDAO.read(newUser.getUsername()));
+        Assertions.assertNull(userDAO.read(newUser.getUsername(), newUser.getPassword()));
         Assertions.assertNull(authDAO.read(registerResult.authToken()));
         Assertions.assertEquals(0, gameDAO.listGames().size());
     }

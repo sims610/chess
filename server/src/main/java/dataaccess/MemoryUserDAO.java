@@ -8,10 +8,14 @@ public class MemoryUserDAO implements UserDAO {
     ArrayList<UserData> userDataList = new ArrayList<>();
 
     @Override
-    public UserData read(String username) {
+    public UserData read(String username, String password) throws DataAccessException {
         for (UserData userData : userDataList) {
             if (userData.username().equals(username)) {
-                return userData;
+                if (userData.password().equals(password)) {
+                    return userData;
+                } else {
+                    throw new DataAccessException(401, "Error: unauthorized");
+                }
             }
         }
         return null;

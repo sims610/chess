@@ -7,11 +7,12 @@ import model.*;
 import model.requestresult.*;
 
 import java.util.UUID;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
 
     public RegisterResult register(RegisterRequest registerRequest, UserDAO userDAO, AuthDAO authDAO) throws DataAccessException {
-        if (getUser(registerRequest.username(), userDAO) == null) {
+        if (getUser(registerRequest.username(), registerRequest.password(), userDAO) == null) {
             if (registerRequest.password() == null) {
                 throw new DataAccessException(400, "Error: bad request");
             }
@@ -27,11 +28,8 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest loginRequest, UserDAO userDAO, AuthDAO authDAO) throws DataAccessException {
-        UserData userData = getUser(loginRequest.username(), userDAO);
+        UserData userData = getUser(loginRequest.username(), loginRequest.password(), userDAO);
         if (userData != null) {
-            if (!userData.password().equals(loginRequest.password())) {
-                throw new DataAccessException(401, "Error: unauthorized");
-            }
             String authToken = UUID.randomUUID().toString();
             AuthData authData = new AuthData(authToken, userData.username());
             createAuth(authData, authDAO);
@@ -53,8 +51,8 @@ public class UserService {
         authDAO.logout(authData);
     }
 
-    private UserData getUser(String username, UserDAO userDAO) throws DataAccessException {
-        return userDAO.read(username);
+    private UserData getUser(String username, String password, UserDAO userDAO) throws DataAccessException {
+        return userDAO.read(username, password);
     }
 
     private void createUser(UserData userData, UserDAO userDAO) throws DataAccessException {

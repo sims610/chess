@@ -2,6 +2,7 @@ package dataaccess;
 
 import model.AuthData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,17 +10,26 @@ import java.sql.SQLException;
 
 public class MySQLUserDAO implements UserDAO {
     @Override
-    public UserData read(String username) throws DataAccessException {
+    public UserData read(String username, String password) throws DataAccessException {
         configureDatabase();
         var statement = "SELECT username, password, email FROM user WHERE username=?;";
-        return queryUser(statement, username);
+        UserData databaseUser =  queryUser(statement, username);
+        if (databaseUser == null) {
+            return null;
+        }
+        if (verifyUser(databaseUser.password(), password)) {
+            return databaseUser;
+        } else {
+            throw new DataAccessException(401, "Error: unauthorized");
+        }
     }
 
     @Override
     public void create(UserData userData) throws DataAccessException {
         configureDatabase();
         var statement = "INSERT INTO `chess`.`user`(`username`, `password`, `email`) VALUES (?, ?, ?);";
-        executeUpdate(statement, userData.username(), userData.password(), userData.email());
+        String hashedPassword = hashUserPassword(userData.password());
+        executeUpdate(statement, userData.username(), hashedPassword, userData.email());
     }
 
     @Override
@@ -95,5 +105,15 @@ public class MySQLUserDAO implements UserDAO {
         } catch (SQLException ex) {
             throw new DataAccessException(500, "message: words");
         }
+    }
+
+    private String hashUserPassword(String password) {
+        // write the hashed password in database along with the user's other information
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    private boolean verifyUser(String hashedPassword, String providedClearTextPassword) {
+        // read the previously hashed password from the database
+        return BCrypt.checkpw(providedClearTextPassword, hashedPassword);
     }
 }
