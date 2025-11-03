@@ -3,12 +3,11 @@ package chess;
 import java.util.Collection;
 import java.util.ArrayList;
 
-class QueenMovesCalculator extends MovesCalculator {
+class QueenMovesCalculator implements MovesCalculator {
     private ChessBoard board;
     private ChessPosition myPosition;
 
     public QueenMovesCalculator(ChessBoard board, ChessPosition myPosition) {
-        super(board, myPosition);
         this.board = board;
         this.myPosition = myPosition;
     }

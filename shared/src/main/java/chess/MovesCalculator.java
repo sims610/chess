@@ -3,47 +3,25 @@ package chess;
 import java.util.Collection;
 import java.util.List;
 
-public class MovesCalculator {
+public interface MovesCalculator {
 
-    private final ChessBoard board;
-    private final ChessPosition myPosition;
+    Collection<ChessMove> pieceMoves();
 
-    public MovesCalculator(ChessBoard board, ChessPosition myPosition) {
-        this.board = board;
-        this.myPosition = myPosition;
+    default boolean canCapture(int i, int j, ChessBoard board, ChessPosition myPosition) {
+        ChessPiece otherPiece = board.getPiece(new ChessPosition(i, j));
+        ChessPiece myPiece = board.getPiece(myPosition);
+        return myPiece.getTeamColor() != otherPiece.getTeamColor();
     }
 
-    Collection<ChessMove> pieceMoves() {
-        ChessPiece piece = board.getPiece(myPosition);
-        switch (piece.getPieceType()) {
-            case KING -> {
-                KingMovesCalculator kingMoves = new KingMovesCalculator(board, myPosition);
-                return kingMoves.pieceMoves();
-            }
-            case QUEEN -> {
-                QueenMovesCalculator queenMoves = new QueenMovesCalculator(board, myPosition);
-                return queenMoves.pieceMoves();
-            }
-            case BISHOP -> {
-                BishopMovesCalculator bishopMoves = new BishopMovesCalculator(board, myPosition);
-                return bishopMoves.pieceMoves();
-            }
-            case KNIGHT -> {
-                KnightMovesCalculator knightMoves = new KnightMovesCalculator(board, myPosition);
-                return knightMoves.pieceMoves();
-            }
-            case ROOK -> {
-                RookMovesCalculator rookMoves = new RookMovesCalculator(board, myPosition);
-                return rookMoves.pieceMoves();
-            }
-            case PAWN -> {
-                PawnMovesCalculator pawnMoves = new PawnMovesCalculator(board, myPosition);
-                return pawnMoves.pieceMoves();
-            }
+    default boolean isEmpty(int i, int j, ChessBoard board) {
+        return board.getPiece(new ChessPosition(i, j)) == null;
+    }
+
+
+    default boolean inBounds(int i, int j) {
+        if (i > 0 && i < 9) {
+            return j > 0 && j < 9;
         }
-        if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
-            return List.of(new ChessMove(new ChessPosition(5, 4), new ChessPosition(1, 8), null));
-        }
-        return List.of();
+        return false;
     }
 }
