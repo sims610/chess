@@ -12,7 +12,7 @@ public class GameService {
     public CreateResult create(CreateRequest createRequest, GameDAO gameDAO) throws DataAccessException {
         String gameName = createRequest.gameName();
         if (gameName == null) {
-            throw new DataAccessException(400, "bad request");
+            throw new DataAccessException(400, "Error: bad request");
         }
         GameData gameData = createGame(gameName, gameDAO);
         return new CreateResult(gameData.gameID());

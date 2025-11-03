@@ -22,7 +22,7 @@ public class MySQLGameDAO implements GameDAO {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Doesn't work");
+            throw new DataAccessException(500, "Error: Can't access database");
         }
     }
 
@@ -106,7 +106,7 @@ public class MySQLGameDAO implements GameDAO {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Doesn't work");
+            throw new DataAccessException(500, "Error: Can't access database");
         }
     }
 
@@ -150,7 +150,7 @@ public class MySQLGameDAO implements GameDAO {
                 return 0;
             }
         } catch (SQLException e) {
-            throw new DataAccessException(500, "Didn't work");
+            throw new DataAccessException(500, "Error: Can't access database");
         }
     }
 
@@ -174,10 +174,8 @@ public class MySQLGameDAO implements GameDAO {
                     preparedStatement.executeUpdate();
                 }
             }
-        } catch (DataAccessException ex) {
-            throw new DataAccessException(500, "Message: Unable to configure database.");
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "message: words");
+            throw new DataAccessException(500, "Error: Unable to configure database.");
         }
     }
 }
