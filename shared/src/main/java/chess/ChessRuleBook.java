@@ -74,6 +74,7 @@ public class ChessRuleBook {
     Boolean isInCheck(ChessBoard board, ChessGame.TeamColor color) {
         // find the King of the team we are checking
         ChessPosition kingPosition = findKing(board, color);
+        Collection<ChessMove> potentialMoves = new ArrayList<>();
         //search through the board and check each position.
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
@@ -82,16 +83,14 @@ public class ChessRuleBook {
                     continue;
                 }
                 if (piece.getTeamColor() != color) {
-                    Collection<ChessMove> potentialMoves = piece.pieceMoves(board, new ChessPosition(i, j));
-                    for (ChessMove move : potentialMoves) {
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
-                    }
+                    potentialMoves.addAll(piece.pieceMoves(board, new ChessPosition(i, j)));
                 }
-
             }
-
+        }
+        for (ChessMove move : potentialMoves) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true;
+            }
         }
         // for each piece on the other team, check if the King's position is in that piece's valid moves.
         // if it is, return True.
