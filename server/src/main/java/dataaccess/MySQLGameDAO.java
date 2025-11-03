@@ -33,7 +33,7 @@ public class MySQLGameDAO implements GameDAO {
         chess.ChessGame chessGame = new chess.ChessGame();
         Integer gameID = ThreadLocalRandom.current().nextInt(1000, 5000);
         GameData gameData = new GameData(gameID, null, null, gameName, chessGame);
-        var statement = "INSERT INTO `chess`.`game`(`gameID`, `whiteUsername`, `blackUsername`, `gameName`, `game`) VALUES (?, ?, ?, ?, ?);";
+        var statement = "INSERT INTO `game`(`gameID`, `whiteUsername`, `blackUsername`, `gameName`, `game`) VALUES (?, ?, ?, ?, ?);";
         executeUpdate(statement, gameData);
         return gameData;
     }
@@ -63,7 +63,7 @@ public class MySQLGameDAO implements GameDAO {
             throw new DataAccessException(400, "Error: tried to join invalid Team Color.");
         }
         deleteGame(gameData.gameID());
-        var statement2 = "INSERT INTO `chess`.`game`(`gameID`, `whiteUsername`, `blackUsername`, `gameName`, `game`) VALUES (?, ?, ?, ?, ?);";
+        var statement2 = "INSERT INTO `game`(`gameID`, `whiteUsername`, `blackUsername`, `gameName`, `game`) VALUES (?, ?, ?, ?, ?);";
         executeUpdate(statement2, updatedGameData);
         return new JoinResult();
     }

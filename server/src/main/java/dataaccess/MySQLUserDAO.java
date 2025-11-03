@@ -27,7 +27,7 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public void create(UserData userData) throws DataAccessException {
         configureDatabase();
-        var statement = "INSERT INTO `chess`.`user`(`username`, `password`, `email`) VALUES (?, ?, ?);";
+        var statement = "INSERT INTO `user`(`username`, `password`, `email`) VALUES (?, ?, ?);";
         String hashedPassword = hashUserPassword(userData.password());
         executeUpdate(statement, userData.username(), hashedPassword, userData.email());
     }

@@ -33,7 +33,7 @@ public class MySQLAuthDAO implements AuthDAO{
     @Override
     public void create(AuthData authData) throws DataAccessException {
         configureDatabase();
-        var statement = "INSERT INTO `chess`.`auth`(`authToken`, `username`) VALUES (?, ?);";
+        var statement = "INSERT INTO `auth`(`authToken`, `username`) VALUES (?, ?);";
         executeUpdate(statement, authData.authToken(), authData.username());
     }
 
