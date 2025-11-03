@@ -56,7 +56,7 @@ public class MySQLGameDAO implements GameDAO {
             updatedGameData = new GameData(gameData.gameID(), username, gameData.blackUsername(), gameData.gameName(), gameData.game());
         } else if (Objects.equals(joinRequest.playerColor(), "BLACK")) {
             if (gameData.blackUsername() != null) {
-                throw new DataAccessException(403, "Error: already taken");
+                throw new DataAccessException(403, "Error: player already taken");
             }
             updatedGameData = new GameData(gameData.gameID(), gameData.whiteUsername(), username, gameData.gameName(), gameData.game());
         } else {
