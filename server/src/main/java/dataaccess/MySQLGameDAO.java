@@ -167,7 +167,7 @@ public class MySQLGameDAO implements GameDAO {
             """
     };
 
-    private void configureDatabase() throws DataAccessException {
+    public void configureDatabase() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             for (String statement : createStatements) {
                 try (var preparedStatement = conn.prepareStatement(statement)) {

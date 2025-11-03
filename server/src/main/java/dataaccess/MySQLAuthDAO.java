@@ -1,15 +1,9 @@
 package dataaccess;
 
-import com.google.gson.Gson;
 import model.AuthData;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class MySQLAuthDAO implements AuthDAO{
 
@@ -108,7 +102,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Error: Unable to configure database.");
+            throw new DataAccessException(500, "Error: Unable to configure database correctly.");
         }
     }
 }
