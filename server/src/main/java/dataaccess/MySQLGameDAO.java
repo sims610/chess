@@ -29,6 +29,9 @@ public class MySQLGameDAO implements GameDAO {
     @Override
     public GameData create(String gameName) throws DataAccessException {
 //      Integer gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game
+        if (gameName == null) {
+            throw new DataAccessException(401, "Error: unauthorized");
+        }
         configureDatabase();
         chess.ChessGame chessGame = new chess.ChessGame();
         Integer gameID = ThreadLocalRandom.current().nextInt(1000, 5000);

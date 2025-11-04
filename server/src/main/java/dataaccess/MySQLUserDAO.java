@@ -27,6 +27,9 @@ public class MySQLUserDAO implements UserDAO {
     @Override
     public void create(UserData userData) throws DataAccessException {
         configureDatabase();
+        if (userData.username() == null) {
+            throw new DataAccessException(401, "Error: not valid");
+        }
         var statement = "INSERT INTO `user`(`username`, `password`, `email`) VALUES (?, ?, ?);";
         String hashedPassword = hashUserPassword(userData.password());
         executeUpdate(statement, userData.username(), hashedPassword, userData.email());
