@@ -13,9 +13,11 @@ import static ui.EscapeSequences.WHITE_QUEEN;
 
 public class PreloginClient {
     ServerFacade serverFacade;
+    String username;
 
     public PreloginClient(ServerFacade serverFacade) {
         this.serverFacade = serverFacade;
+        username = null;
     }
 
     public void run() {
@@ -31,7 +33,7 @@ public class PreloginClient {
                 result = eval(line);
                 System.out.print(result);
                 if (result.startsWith("Logged in")) {
-                    new PostloginClient(serverFacade).run();
+                    new PostloginClient(serverFacade, username).run();
                 }
             } catch (Throwable e) {
                 var msg = e.toString();
@@ -67,6 +69,7 @@ public class PreloginClient {
             String password = params[1];
             LoginRequest loginUser = new LoginRequest(username, password);
             LoginResult result = serverFacade.login(loginUser);
+            this.username = result.username();
             return String.format("Logged in as %s", result.username());
         }
         throw new RuntimeException("Couldn't login client");
@@ -79,6 +82,7 @@ public class PreloginClient {
             String email = params[2];
             RegisterRequest newUser = new RegisterRequest(username, password, email);
             RegisterResult result = serverFacade.register(newUser);
+            this.username = result.username();
             return String.format("Logged in as %s", result.username());
         }
         throw new RuntimeException("Couldn't register user");

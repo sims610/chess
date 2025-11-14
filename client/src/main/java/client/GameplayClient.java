@@ -1,11 +1,28 @@
 package client;
 
+import model.GameData;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static ui.EscapeSequences.*;
+
 public class GameplayClient {
+    private int gameID;
+    private ServerFacade serverFacade;
+    private String username;
+    private GameData gameData;
+
+    public GameplayClient(ServerFacade serverFacade, int gameID, String username) {
+        this.serverFacade = serverFacade;
+        this.gameID = gameID;
+        this.username = username;
+
+    }
+
     public void run() {
         printBoard();
+        printPrompt();
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -47,6 +64,17 @@ public class GameplayClient {
     }
 
     private void printBoard() {
-        throw new RuntimeException("Not implemented");
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                System.out.print(SET_BG_COLOR_BLACK + WHITE_KING);
+                System.out.print(SET_BG_COLOR_WHITE + EMPTY);
+            }
+            System.out.print(RESET_BG_COLOR + "\n");
+            for (int j = 0; j < 4; j++) {
+                System.out.print(SET_BG_COLOR_WHITE + EMPTY);
+                System.out.print(SET_BG_COLOR_BLACK + EMPTY);
+            }
+            System.out.print(RESET_BG_COLOR + "\n");
+        }
     }
 }

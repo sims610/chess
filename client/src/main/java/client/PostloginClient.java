@@ -3,14 +3,24 @@ package client;
 import model.GameData;
 import model.requestresult.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class PostloginClient {
     private ServerFacade serverFacade;
+    private ArrayList<Integer> gameIDs;
+    private final String username;
 
-    public PostloginClient(ServerFacade serverFacade) {
+    public PostloginClient(ServerFacade serverFacade, String username) {
         this.serverFacade = serverFacade;
+        ListResult result = this.serverFacade.listGames(new ListRequest());
+        gameIDs = new ArrayList<>();
+        for (int i = 0; i < result.games().size(); i++) {
+            gameIDs.addFirst(result.games().get(i).gameID());
+        }
+        this.username = username;
     }
 
     public void run() {
@@ -61,6 +71,7 @@ public class PostloginClient {
         if (params.length >= 1) {
             CreateRequest createRequest = new CreateRequest(params[0]);
             CreateResult result = serverFacade.create(createRequest);
+            gameIDs.addLast(result.gameID());
             return String.format("created game: %s", params[0]);
         }
         throw new RuntimeException("couldn't create game");
@@ -77,7 +88,21 @@ public class PostloginClient {
     }
 
     private String join(String... params) {
-        throw new RuntimeException("Not Implemented");
+        String teamcolor = null;
+        if (params.length >= 2) {
+            int gameNum = Integer.parseInt(params[0]);
+            if (Objects.equals(params[1], "white")) {
+                teamcolor = "WHITE";
+            } else {
+                teamcolor = "BLACK";
+            }
+            int gameID = gameIDs.get(gameNum - 1);
+            JoinRequest joinRequest = new JoinRequest(teamcolor, gameIDs.get(gameNum - 1), username);
+            System.out.println(gameIDs.get(gameNum - 1));
+            JoinResult result = serverFacade.joinGame(joinRequest);
+            new GameplayClient(serverFacade, gameID, username).run();
+        }
+        return String.format("Joined game as %s", teamcolor);
     }
 
     private String observe(String... params) {
