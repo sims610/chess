@@ -2,6 +2,7 @@ package client;
 
 import dataaccess.*;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import model.requestresult.*;
 import org.junit.jupiter.api.*;
@@ -19,6 +20,7 @@ public class ServerFacadeTests {
     private static UserDAO userDAO;
     private static RegisterRequest newUser;
     private static LoginRequest loginUser;
+    private static CreateRequest createGame;
 
     @BeforeAll
     public static void init() {
@@ -31,6 +33,7 @@ public class ServerFacadeTests {
         userDAO = new MySQLUserDAO();
         newUser = new RegisterRequest("newUser", "newUserPassword", "newUserEmail");
         loginUser = new LoginRequest("newUser", "newUserPassword");
+        createGame = new CreateRequest("newGame");
     }
 
     @AfterAll
@@ -104,7 +107,6 @@ public class ServerFacadeTests {
     @Test
     public void createPassesTest() {
         serverFacade.register(newUser);
-        CreateRequest createGame = new CreateRequest("newGame");
         Assertions.assertDoesNotThrow(() -> {
             serverFacade.create(createGame);
         });
@@ -116,6 +118,37 @@ public class ServerFacadeTests {
         CreateRequest createGame = null;
         Assertions.assertThrows(RuntimeException.class, () -> {
             serverFacade.create(createGame);
+        });
+    }
+
+    @Test
+    public void listGamesPassesTest() {
+        serverFacade.register(newUser);
+        serverFacade.create(createGame);
+        ListResult result = serverFacade.listGames(new ListRequest());
+        Assertions.assertEquals(1, result.games().size());
+    }
+
+    @Test
+    public void listGameFailsTest() {
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            serverFacade.listGames(new ListRequest());
+        });
+    }
+
+    @Test
+    public void joinGamePassesTest() throws DataAccessException {
+        serverFacade.register(newUser);
+        CreateResult create = serverFacade.create(createGame);
+        serverFacade.joinGame(new JoinRequest("BLACK", create.gameID(), newUser.username()));
+        GameData expected = gameDAO.read(create.gameID());
+        Assertions.assertEquals(newUser.username(), expected.blackUsername());
+    }
+
+    @Test
+    public void joinGameFailsTest() {
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            serverFacade.joinGame(new JoinRequest("WHITE", 1234, newUser.username()));
         });
     }
 }

@@ -67,9 +67,17 @@ public class ServerFacade {
         return handleResponse(response, CreateResult.class);
     }
 
-    ListResult listGames(ListRequest listRequest) {return null;}
+    ListResult listGames(ListRequest listRequest) {
+        var request = buildRequest("GET", "/game", listRequest);
+        var response = sendRequest(request);
+        return handleResponse(response, ListResult.class);
+    }
 
-    JoinResult joinGame(JoinRequest joinRequest) {return null;}
+    JoinResult joinGame(JoinRequest joinRequest) {
+        var request = buildRequest("PUT", "/game", joinRequest);
+        var response = sendRequest(request);
+        return handleResponse(response, JoinResult.class);
+    }
 
     private HttpRequest buildRequest(String method, String path, Object body) {
         var request = HttpRequest.newBuilder()
