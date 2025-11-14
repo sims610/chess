@@ -1,6 +1,10 @@
 package client;
 
 import jdk.jshell.spi.ExecutionControl;
+import model.requestresult.LoginRequest;
+import model.requestresult.LoginResult;
+import model.requestresult.RegisterRequest;
+import model.requestresult.RegisterResult;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -8,6 +12,11 @@ import java.util.Scanner;
 import static ui.EscapeSequences.WHITE_QUEEN;
 
 public class PreloginClient {
+    ServerFacade serverFacade;
+
+    public PreloginClient(ServerFacade serverFacade) {
+        this.serverFacade = serverFacade;
+    }
 
     public void run() {
         System.out.println(WHITE_QUEEN + "Welcome to Chess. Type help to get started." + WHITE_QUEEN);
@@ -21,6 +30,9 @@ public class PreloginClient {
             try {
                 result = eval(line);
                 System.out.print(result);
+                if (result.startsWith("Logged in")) {
+                    new PostloginClient(serverFacade).run();
+                }
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -50,15 +62,33 @@ public class PreloginClient {
     }
 
     private String login(String... params) {
-        throw new RuntimeException("Not Implemented");
+        if (params.length >= 2) {
+            String username = params[0];
+            String password = params[1];
+            LoginRequest loginUser = new LoginRequest(username, password);
+            LoginResult result = serverFacade.login(loginUser);
+            return String.format("Logged in as %s", result.username());
+        }
+        throw new RuntimeException("Couldn't login client");
     }
 
     private String register(String... params) {
-        throw new RuntimeException("Not Implemented");
+        if (params.length >= 3) {
+            String username = params[0];
+            String password = params[1];
+            String email = params[2];
+            RegisterRequest newUser = new RegisterRequest(username, password, email);
+            RegisterResult result = serverFacade.register(newUser);
+            return String.format("Logged in as %s", result.username());
+        }
+        throw new RuntimeException("Couldn't register user");
     }
 
     private String help() {
-        throw new RuntimeException("Not Implemented");
+        return "register <USERNAME> <PASSWORD> <EMAIL> - to create an account\n" +
+                "login <USERNAME> <PASSWORD> - to play chess\n" +
+                "quit - playing chess\n" +
+                "help - with possible commands\n";
     }
 
 }

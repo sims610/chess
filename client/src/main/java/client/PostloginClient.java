@@ -6,6 +6,12 @@ import java.util.Scanner;
 import static ui.EscapeSequences.WHITE_QUEEN;
 
 public class PostloginClient {
+    private ServerFacade serverFacade;
+
+    public PostloginClient(ServerFacade serverFacade) {
+        this.serverFacade = serverFacade;
+    }
+
     public void run() {
         Scanner scanner = new Scanner(System.in);
         var result = "";
