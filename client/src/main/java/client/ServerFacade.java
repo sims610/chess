@@ -16,9 +16,11 @@ import java.util.Locale;
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
     private final String serverUrl;
+    private String authToken;
 
     public ServerFacade(String host, int port) {
         serverUrl = String.format(Locale.getDefault(), "http://%s:%d", host, port);
+        authToken = null;
     }
 
     public void get(String host, int port, String urlPath) throws Exception {
@@ -35,18 +37,35 @@ public class ServerFacade {
     RegisterResult register(RegisterRequest registerRequest) {
         var request = buildRequest("POST", "/user", registerRequest);
         var response = sendRequest(request);
-        return handleResponse(response, RegisterResult.class);
+        RegisterResult result = handleResponse(response, RegisterResult.class);
+        if (result != null) {
+            authToken = result.authToken();
+        }
+        return result;
     }
 
     LoginResult login(LoginRequest loginRequest) {
         var request = buildRequest("POST", "/session", loginRequest);
         var response = sendRequest(request);
-        return handleResponse(response, LoginResult.class);
+        LoginResult result = handleResponse(response, LoginResult.class);
+        if (result != null) {
+            authToken = result.authToken();
+        }
+        return result;
     }
 
-    LogoutResult logout(LogoutRequest logoutRequest) {return null;}
+    LogoutResult logout(LogoutRequest logoutRequest) {
+        var request = buildRequest("DELETE", "/session", logoutRequest);
+        var response = sendRequest(request);
+        authToken = null;
+        return handleResponse(response, LogoutResult.class);
+    }
 
-    CreateResult create(CreateRequest createRequest) {return null;}
+    CreateResult create(CreateRequest createRequest) {
+        var request = buildRequest("POST", "/game", createRequest);
+        var response = sendRequest(request);
+        return handleResponse(response, CreateResult.class);
+    }
 
     ListResult listGames(ListRequest listRequest) {return null;}
 
@@ -55,8 +74,11 @@ public class ServerFacade {
     private HttpRequest buildRequest(String method, String path, Object body) {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + path))
-                .timeout(java.time.Duration.ofMillis(5000))
+                .timeout(java.time.Duration.ofMillis(500000000))
                 .method(method, makeRequestBody(body));
+        if (authToken != null) {
+            request.header("Authorization", authToken);
+        }
         if (body != null) {
             request.setHeader("Content-Type", "application/json");
         }

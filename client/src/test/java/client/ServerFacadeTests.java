@@ -3,10 +3,7 @@ package client;
 import dataaccess.*;
 import model.AuthData;
 import model.UserData;
-import model.requestresult.LoginRequest;
-import model.requestresult.LoginResult;
-import model.requestresult.RegisterRequest;
-import model.requestresult.RegisterResult;
+import model.requestresult.*;
 import org.junit.jupiter.api.*;
 import server.Server;
 
@@ -83,6 +80,42 @@ public class ServerFacadeTests {
         // Tries to login a user that is not registered
         Assertions.assertThrows(RuntimeException.class, () -> {
             serverFacade.login(loginUser);
+        });
+    }
+
+    @Test
+    public void logoutPassesTest() throws DataAccessException {
+        RegisterResult registerResult = serverFacade.register(newUser);
+        LogoutRequest logoutUser = new LogoutRequest(registerResult.authToken());
+        LogoutResult result = serverFacade.logout(logoutUser);
+    }
+
+    @Test
+    public void logoutFailsTest() {
+        // Tries to logout twice
+        RegisterResult registerResult = serverFacade.register(newUser);
+        LogoutRequest logoutUser = new LogoutRequest(registerResult.authToken());
+        serverFacade.logout(logoutUser);
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            serverFacade.logout(logoutUser);
+        });
+    }
+
+    @Test
+    public void createPassesTest() {
+        serverFacade.register(newUser);
+        CreateRequest createGame = new CreateRequest("newGame");
+        Assertions.assertDoesNotThrow(() -> {
+            serverFacade.create(createGame);
+        });
+    }
+
+    @Test
+    public void createFailsTest() {
+        serverFacade.register(newUser);
+        CreateRequest createGame = null;
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            serverFacade.create(createGame);
         });
     }
 }
