@@ -108,7 +108,12 @@ public class PostloginClient {
     }
 
     private String observe(String... params) {
-        throw new RuntimeException("Not Implemented");
+        if (params.length >= 1) {
+            int gameNum = Integer.parseInt(params[0]);
+            GameData game = gameIDs.get(gameNum - 1);
+            new GameplayClient(serverFacade, game, username, null).run();
+        }
+        return "Observed game";
     }
 
     private String logout() {
