@@ -3,24 +3,27 @@ package client;
 import model.GameData;
 import model.requestresult.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class PostloginClient {
     private ServerFacade serverFacade;
-    private ArrayList<Integer> gameIDs;
+    private Map<Integer, GameData> gameIDs;
     private final String username;
 
     public PostloginClient(ServerFacade serverFacade, String username) {
         this.serverFacade = serverFacade;
         ListResult result = this.serverFacade.listGames(new ListRequest());
-        gameIDs = new ArrayList<>();
-        for (int i = 0; i < result.games().size(); i++) {
-            gameIDs.addFirst(result.games().get(i).gameID());
-        }
+        gameIDs = new LinkedHashMap<>();
+        updateGameIDs();
         this.username = username;
+    }
+
+    private void updateGameIDs() {
+        ListResult result = this.serverFacade.listGames(new ListRequest());
+        for (int i = 0; i < result.games().size(); i++) {
+            GameData game = result.games().get(i);
+            gameIDs.put(i, game);
+        }
     }
 
     public void run() {
@@ -71,7 +74,7 @@ public class PostloginClient {
         if (params.length >= 1) {
             CreateRequest createRequest = new CreateRequest(params[0]);
             CreateResult result = serverFacade.create(createRequest);
-            gameIDs.addLast(result.gameID());
+            updateGameIDs();
             return String.format("created game: %s", params[0]);
         }
         throw new RuntimeException("couldn't create game");
@@ -96,11 +99,10 @@ public class PostloginClient {
             } else {
                 teamcolor = "BLACK";
             }
-            int gameID = gameIDs.get(gameNum - 1);
-            JoinRequest joinRequest = new JoinRequest(teamcolor, gameIDs.get(gameNum - 1), username);
-            System.out.println(gameIDs.get(gameNum - 1));
+            GameData game = gameIDs.get(gameNum - 1);
+            JoinRequest joinRequest = new JoinRequest(teamcolor, gameIDs.get(gameNum - 1).gameID(), username);
             JoinResult result = serverFacade.joinGame(joinRequest);
-            new GameplayClient(serverFacade, gameID, username).run();
+            new GameplayClient(serverFacade, game, username, joinRequest.playerColor()).run();
         }
         return String.format("Joined game as %s", teamcolor);
     }
