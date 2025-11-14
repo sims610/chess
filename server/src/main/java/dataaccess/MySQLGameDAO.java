@@ -2,7 +2,6 @@ package dataaccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
 import model.GameData;
 import model.requestresult.JoinRequest;
 import model.requestresult.JoinResult;
@@ -160,13 +159,12 @@ public class MySQLGameDAO implements GameDAO {
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS `game` (
-              `id` int NOT NULL AUTO_INCREMENT,
               `gameID` int NOT NULL,
               `whiteUsername` varchar(225) DEFAULT NULL,
               `blackUsername` varchar(225) DEFAULT NULL,
               `gameName` varchar(225) NOT NULL,
               `game` longtext NOT NULL,
-              PRIMARY KEY (`id`)
+              PRIMARY KEY (`gameID`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             """
     };
