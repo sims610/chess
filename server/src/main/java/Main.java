@@ -1,6 +1,8 @@
 import chess.*;
 import server.Server;
 
+import java.util.logging.Logger;
+
 public class Main {
     public static void main(String[] args) {
         Server server = new Server();
