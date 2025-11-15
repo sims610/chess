@@ -1,15 +1,10 @@
 package server;
 
-import com.google.gson.Gson;
 import dataaccess.*;
 import handler.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.AuthData;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
-import java.util.logging.Logger;
 
 public class Server {
 
@@ -26,7 +21,6 @@ public class Server {
 
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
-        logger.addHandler(new DatabaseHandler());
 
         // Register your endpoints and exception handlers here.
         javalin.post("/user", this::registerUser);
@@ -36,18 +30,11 @@ public class Server {
         javalin.get("/game", this::listGames);
         javalin.put("/game", this::joinGame);
         javalin.delete("/db", this::clear);
-        javalin.after(this::log);
         javalin.exception(DataAccessException.class, this::exceptionHandler);
     }
 
-    static Logger logger = Logger.getLogger("myLogger");
-
     private void startDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
-    }
-
-    private void log(Context ctx) {
-        logger.info(String.format("[%s]%s - %s", ctx.method(), ctx.path(), ctx.status()));
     }
 
     private void joinGame(Context ctx) throws DataAccessException {
