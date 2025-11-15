@@ -14,7 +14,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Error: Can't access database");
+            throw new DataAccessException("Error: Can't access database", ex);
         }
     }
 
@@ -44,7 +44,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Error: Can't access database");
+            throw new DataAccessException("Error: Can't access database", ex);
         }
     }
 
@@ -62,7 +62,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Error: can't access database");
+            throw new DataAccessException("Error: can't access database", ex);
         }
         return null;
     }
@@ -77,8 +77,8 @@ public class MySQLAuthDAO implements AuthDAO{
 
                 return 0;
             }
-        } catch (SQLException e) {
-            throw new DataAccessException(500, "Error: Can't access database");
+        } catch (SQLException ex) {
+            throw new DataAccessException("Error: Can't access database", ex);
         }
     }
 
@@ -102,7 +102,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Error: Unable to configure database correctly.");
+            throw new DataAccessException("Error: Unable to configure database correctly.", ex);
         }
     }
 }

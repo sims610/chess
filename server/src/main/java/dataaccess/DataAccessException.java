@@ -16,6 +16,7 @@ public class DataAccessException extends Exception{
     }
     public DataAccessException(String message, Throwable ex) {
         super(message, ex);
+        this.code = 500;
     }
 
     public String toJson() {

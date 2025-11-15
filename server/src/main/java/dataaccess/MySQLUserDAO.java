@@ -42,7 +42,7 @@ public class MySQLUserDAO implements UserDAO {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Error: Couldn't Access Database");
+            throw new DataAccessException("Error: Couldn't Access Database", ex);
         }
     }
 
@@ -61,7 +61,7 @@ public class MySQLUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Error: not working");
+            throw new DataAccessException("Error: not working", ex);
         }
         return null;
     }
@@ -77,8 +77,8 @@ public class MySQLUserDAO implements UserDAO {
 
                 return 0;
             }
-        } catch (SQLException e) {
-            throw new DataAccessException(500, "Error: Couldn't Access Database");
+        } catch (SQLException ex) {
+            throw new DataAccessException("Error: Couldn't Access Database", ex);
         }
     }
 
@@ -104,7 +104,7 @@ public class MySQLUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Error: Can't configure Database");
+            throw new DataAccessException("Error: Can't configure Database", ex);
         }
     }
 

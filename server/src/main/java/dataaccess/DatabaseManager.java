@@ -25,7 +25,7 @@ public class DatabaseManager {
              var preparedStatement = conn.prepareStatement(statement)) {
             preparedStatement.executeUpdate();
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "Error: failed to create database");
+            throw new DataAccessException("Error: failed to create database", ex);
         }
     }
 
@@ -48,7 +48,7 @@ public class DatabaseManager {
             conn.setCatalog(databaseName);
             return conn;
         } catch (SQLException ex) {
-            throw new DataAccessException(500, "error: couldn't get a connection");
+            throw new DataAccessException("error: couldn't get a connection", ex);
         }
     }
 
