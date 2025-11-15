@@ -38,7 +38,6 @@ public class Server {
     }
 
     private void joinGame(Context ctx) throws DataAccessException {
-        startDatabase();
         if (authorized(ctx)) {
             String username = getUsername(ctx);
             String joinGame = joinGameHandler.handleRequest(ctx, username, gameDAO);
@@ -88,6 +87,7 @@ public class Server {
     }
 
     private void clear(Context ctx) throws DataAccessException {
+        startDatabase();
         String clear = clearHandler.handleRequest(userDAO, authDAO, gameDAO);
         ctx.json(clear);
     }
