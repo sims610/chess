@@ -102,7 +102,7 @@ public class ServerFacade {
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
-            throw new RuntimeException("Didn't work");
+            throw new RuntimeException(e);
         }
     }
 
@@ -111,7 +111,7 @@ public class ServerFacade {
         if (!isSuccessful(status)) {
             var body = response.body();
             if (body != null) {
-                throw new RuntimeException("Didn't work");
+                throw new RuntimeException("Invalid");
             }
             throw new RuntimeException("Status code failure");
         }

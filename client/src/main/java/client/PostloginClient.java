@@ -93,11 +93,21 @@ public class PostloginClient {
     private String join(String... params) {
         String teamcolor = null;
         if (params.length >= 2) {
-            int gameNum = Integer.parseInt(params[0]);
+            int gameNum;
+            try {
+                gameNum = Integer.parseInt(params[0]);
+            } catch (Exception e) {
+                throw new RuntimeException("Please use actual number ex: 5");
+            }
             if (Objects.equals(params[1], "white")) {
                 teamcolor = "WHITE";
-            } else {
+            } else if (Objects.equals(params[1], "black")) {
                 teamcolor = "BLACK";
+            } else {
+                throw new RuntimeException("Invalid Team Color");
+            }
+            if (gameNum > gameIDs.size() || gameNum < 1) {
+                throw new RuntimeException("Invalid number. Please choose a valid game number.");
             }
             GameData game = gameIDs.get(gameNum - 1);
             JoinRequest joinRequest = new JoinRequest(teamcolor, gameIDs.get(gameNum - 1).gameID(), username);
@@ -109,7 +119,15 @@ public class PostloginClient {
 
     private String observe(String... params) {
         if (params.length >= 1) {
-            int gameNum = Integer.parseInt(params[0]);
+            int gameNum;
+            try {
+                gameNum = Integer.parseInt(params[0]);
+            } catch (Exception e) {
+                throw new RuntimeException("Please use actual number ex: 5");
+            }
+            if (gameNum > gameIDs.size() || gameNum < 1) {
+                throw new RuntimeException("Invalid number. Please choose a valid game number.");
+            }
             GameData game = gameIDs.get(gameNum - 1);
             new GameplayClient(serverFacade, game, username, null).run();
         }

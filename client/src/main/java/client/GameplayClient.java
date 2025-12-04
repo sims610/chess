@@ -131,12 +131,12 @@ public class GameplayClient {
         header += SET_BG_COLOR_LIGHT_GREY;
         header += EMPTY;
         if (Objects.equals(teamColor, "BLACK")) {
-            String[] headerValues = {" h ",  " g ", " f ", " e ", " d ", " c ", " b ", " a "};
+            String[] headerValues = {" h  ",  " g  ", " f  ", " e  ", " d   ", " c  ", "  b ", "  a "};
             for (int i = 0; i < 8; i++) {
                 header += headerValues[i];
             }
         } else {
-            String[] headerValues = {" a ", " b ", " c ", " d ", " e ", " f ", " g ", " h "};
+            String[] headerValues = {" a  ", " b  ", " c  ", " d  ", " e   ", " f  ", "  g ", "  h "};
             for (int i = 0; i < 8; i++) {
                 header += headerValues[i];
             }
