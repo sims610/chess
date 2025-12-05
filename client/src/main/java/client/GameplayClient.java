@@ -10,6 +10,7 @@ import model.requestresult.JoinRequest;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
+import client.websocket.WebSocketFacade;
 
 import static ui.EscapeSequences.*;
 
@@ -20,13 +21,16 @@ public class GameplayClient {
     private GameData gameData;
     private String background;
     private String teamColor;
+    private final WebSocketFacade ws;
 
     public GameplayClient(ServerFacade serverFacade, GameData game, String username, String teamColor) {
         this.serverFacade = serverFacade;
+        ws = new WebSocketFacade(this.serverFacade.serverUrl, this);
         this.username = username;
         this.gameData = game;
         background = SET_BG_COLOR_BLACK;
         this.teamColor = teamColor;
+        connect();
     }
 
     public void run() {
@@ -49,6 +53,9 @@ public class GameplayClient {
         System.out.println();
     }
 
+    private void connect(int gameID) {
+    }
+
     private void printPrompt() {
         System.out.print("\n" + "[GAME] >>> ");
     }
@@ -60,6 +67,11 @@ public class GameplayClient {
             String[] params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "quit" -> "quit";
+                case "redraw" -> redraw();
+                case "leave" -> leave();
+                case "move" -> move(params);
+                case "resign" -> resign();
+                case "highlight" -> highlight(params);
                 default -> help();
             };
         } catch (Throwable e) {

@@ -5,6 +5,7 @@ import handler.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.AuthData;
+import server.websocket.WebSocketHandler;
 
 public class Server {
 
@@ -18,19 +19,20 @@ public class Server {
     private final AuthDAO authDAO = new MySQLAuthDAO();
     private final UserDAO userDAO = new MySQLUserDAO();
     private final GameDAO gameDAO = new MySQLGameDAO();
+    private final WebSocketHandler webSocketHandler;
 
 
     public Server() {
+
+        webSocketHandler = new WebSocketHandler();
+
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
         javalin.ws("/ws", ws -> {
-            ws.onConnect(ctx -> {
-                ctx.enableAutomaticPings();
-                System.out.println("Websocket connected");
-            });
-            ws.onMessage(ctx -> ctx.send("WebSocket response:" + ctx.message()));
-            ws.onClose(_ -> System.out.println("Websocket closed"));
+            ws.onConnect(webSocketHandler);
+            ws.onMessage(webSocketHandler);
+            ws.onClose(webSocketHandler);
         });
         javalin.post("/user", this::registerUser);
         javalin.post("/session", this::loginUser);

@@ -11,9 +11,12 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.jetbrains.annotations.NotNull;
 import websocket.commands.UserGameCommand;
 import java.io.IOException;
+
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import static websocket.commands.UserGameCommand.CommandType.*;
+import static websocket.messages.ServerMessage.ServerMessageType.NOTIFICATION;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
 
@@ -41,6 +44,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             }
         } catch (DataAccessException ex) {
             System.out.println("oh NO");
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -53,9 +58,9 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void resign(Session session, String username) {
     }
 
-    private void leave(Session session, String username) {
+    private void leave(Session session, String username) throws IOException {
         var message = String.format("%s left the game", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        var notification = new NotificationMessage(NOTIFICATION, message);
         connections.broadcast(session, notification);
         connections.leave(gameID, session);
     }
@@ -63,10 +68,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void make_move(Session session, String username) {
     }
 
-    private void connect(Session session, String username) {
+    private void connect(Session session, String username) throws IOException {
         connections.join(gameID, session);
         var message = String.format("%s joined the game", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        var notification = new NotificationMessage(NOTIFICATION, message);
         connections.broadcast(session, notification);
     }
 
