@@ -39,4 +39,14 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
 
     }
+
+    public void connect() {}
+
+    public void leave() {}
+
+    public void move() {}
+
+    public void resign() {}
+
+    public void highlight() {}
 }

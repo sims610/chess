@@ -1,21 +1,16 @@
 package server.websocket;
 
 import com.google.gson.Gson;
-import com.mysql.cj.xdevapi.SqlUpdateResult;
 import dataaccess.DataAccessException;
 import dataaccess.MySQLAuthDAO;
-import dataaccess.MySQLUserDAO;
 import io.javalin.websocket.*;
 import model.AuthData;
 import org.eclipse.jetty.websocket.api.Session;
-import org.jetbrains.annotations.NotNull;
 import websocket.commands.UserGameCommand;
 import java.io.IOException;
 
 import websocket.messages.NotificationMessage;
-import websocket.messages.ServerMessage;
 
-import static websocket.commands.UserGameCommand.CommandType.*;
 import static websocket.messages.ServerMessage.ServerMessageType.NOTIFICATION;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
@@ -61,7 +56,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
     private void leave(Session session, String username) throws IOException {
         var message = String.format("%s left the game", username);
         var notification = new NotificationMessage(NOTIFICATION, message);
-        connections.broadcast(session, notification);
+        connections.broadcast(session, gameID, notification);
         connections.leave(gameID, session);
     }
 
@@ -72,7 +67,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.join(gameID, session);
         var message = String.format("%s joined the game", username);
         var notification = new NotificationMessage(NOTIFICATION, message);
-        connections.broadcast(session, notification);
+        connections.broadcast(session, gameID, notification);
     }
 
     @Override

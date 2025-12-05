@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import dataaccess.DataAccessException;
 import model.GameData;
 import model.requestresult.JoinRequest;
 
@@ -23,14 +24,15 @@ public class GameplayClient {
     private String teamColor;
     private final WebSocketFacade ws;
 
-    public GameplayClient(ServerFacade serverFacade, GameData game, String username, String teamColor) {
+    public GameplayClient(ServerFacade serverFacade, GameData game, String username, String teamColor) throws DataAccessException {
         this.serverFacade = serverFacade;
         ws = new WebSocketFacade(this.serverFacade.serverUrl, this);
         this.username = username;
         this.gameData = game;
+        this.gameID = game.gameID();
         background = SET_BG_COLOR_BLACK;
         this.teamColor = teamColor;
-        connect();
+        ws.connect();
     }
 
     public void run() {
@@ -53,7 +55,8 @@ public class GameplayClient {
         System.out.println();
     }
 
-    private void connect(int gameID) {
+    private void connect() {
+        ws.connect();
     }
 
     private void printPrompt() {
@@ -77,6 +80,11 @@ public class GameplayClient {
         } catch (Throwable e) {
             return e.getMessage();
         }
+    }
+
+    private String redraw() {
+        printBoard();
+        return "";
     }
 
     private String help() {
