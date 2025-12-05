@@ -19,10 +19,19 @@ public class Server {
     private final UserDAO userDAO = new MySQLUserDAO();
     private final GameDAO gameDAO = new MySQLGameDAO();
 
+
     public Server() {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
+        javalin.ws("/ws", ws -> {
+            ws.onConnect(ctx -> {
+                ctx.enableAutomaticPings();
+                System.out.println("Websocket connected");
+            });
+            ws.onMessage(ctx -> ctx.send("WebSocket response:" + ctx.message()));
+            ws.onClose(_ -> System.out.println("Websocket closed"));
+        });
         javalin.post("/user", this::registerUser);
         javalin.post("/session", this::loginUser);
         javalin.delete("/session", this::logoutUser);

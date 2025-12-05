@@ -68,7 +68,14 @@ public class GameplayClient {
     }
 
     private String help() {
-        throw new RuntimeException("Not Implemented");
+        return """
+                redraw - the board
+                leave - the game
+                move <start> <end>
+                resign - forfeit the game
+                highlight <chess position> - highlight legal moves
+                help - with possible commands
+                """;
     }
 
     private void printBoard() {
@@ -102,7 +109,7 @@ public class GameplayClient {
         ChessGame game = gameData.game();
         ChessBoard board = game.getBoard();
         System.out.print(setHeader());
-        String[] sides = {" 8 ", " 7 ", " 6 " ," 5 " ," 4 " ," 3 " ," 2 ", " 1 "};
+        String[] sides = {"\u20038 ", "\u20037 ", "\u20036 " ,"\u20035 " ,"\u20034 " ,"\u20033 " ,"\u20032 ", "\u20031 "};
         for (int i = 8; i > 0; i--) {
             System.out.print(SET_BG_COLOR_LIGHT_GREY + sides[i - 1]);
             for (int j = 8; j > 0; j--) {
@@ -136,7 +143,7 @@ public class GameplayClient {
                 header += headerValues[i];
             }
         } else {
-            String[] headerValues = {" a  ", " b  ", " c  ", " d  ", " e   ", " f  ", "  g ", "  h "};
+            String[] headerValues = {" a  ", " b  ", " c  ", " d  ", " e  ", " f  ", "  g ", "  h "};
             for (int i = 0; i < 8; i++) {
                 header += headerValues[i];
             }
