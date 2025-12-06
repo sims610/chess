@@ -7,12 +7,13 @@ import chess.ChessPosition;
 import client.websocket.NotificationHandler;
 import dataaccess.DataAccessException;
 import model.GameData;
-import model.requestresult.JoinRequest;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 import client.websocket.WebSocketFacade;
+import websocket.messages.ErrorMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import static ui.EscapeSequences.*;
@@ -92,19 +93,19 @@ public class GameplayClient implements NotificationHandler {
     }
 
     private String resign() {
-        ws.resign();
+        ws.resign(serverFacade.authToken, gameID);
         return String.format("You left the game");
     }
 
     private String move(String[] params) throws DataAccessException {
         if (params.length == 2) {
-            ws.move();
+
         }
         throw new RuntimeException("Invalid input");
     }
 
     private String leave() {
-        ws.leave();
+        ws.leave(serverFacade.authToken, gameID);
         return String.format("You left the game");
     }
 
@@ -226,6 +227,20 @@ public class GameplayClient implements NotificationHandler {
 
     @Override
     public void notify(ServerMessage notification) {
+        switch (notification.getServerMessageType()) {
+            case LOAD_GAME -> {
+
+            }
+            case ERROR -> {
+                System.out.println(notification.getServerMessageType());
+            }
+            case NOTIFICATION -> {
+                System.out.println(((NotificationMessage) notification).msg);
+            }
+            default -> {
+                System.out.println(notification);
+            }
+        }
         System.out.println(notification);
         printPrompt();
     }

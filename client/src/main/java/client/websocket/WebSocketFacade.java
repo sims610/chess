@@ -1,6 +1,5 @@
 package client.websocket;
 
-import client.ServerFacade;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import jakarta.websocket.*;
@@ -12,7 +11,7 @@ import java.net.URI;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static websocket.commands.UserGameCommand.CommandType.CONNECT;
+import static websocket.commands.UserGameCommand.CommandType.*;
 
 public class WebSocketFacade extends Endpoint {
 
@@ -33,8 +32,19 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
+
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-                    notificationHandler.notify(notification);
+                    NotificationMessage thing = null;
+                    switch (notification.getServerMessageType()) {
+                        case LOAD_GAME -> {
+                        }
+                        case ERROR -> {
+                        }
+                        case NOTIFICATION -> {
+                            thing = new Gson().fromJson(message, NotificationMessage.class);
+                        }
+                    }
+                    notificationHandler.notify(thing);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -56,11 +66,32 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void leave() {}
+    public void leave(String authToken, int gameID) {
+        try {
+            var command = new UserGameCommand(LEAVE, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not parse");
+        }
+    }
 
-    public void move() {}
+    public void move(String authToken, int gameID) {
+        try {
+            var command = new UserGameCommand(RESIGN, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not parse");
+        }
+    }
 
-    public void resign() {}
+    public void resign(String authToken, int gameID) {
+        try {
+            var command = new UserGameCommand(RESIGN, authToken, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not parse");
+        }
+    }
 
     public void highlight() {}
 }
