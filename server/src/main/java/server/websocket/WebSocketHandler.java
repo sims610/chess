@@ -50,7 +50,10 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         return authdata.username();
     }
 
-    private void resign(Session session, String username) {
+    private void resign(Session session, String username) throws IOException {
+        var message = String.format("%s resigned from the game", username);
+        var notification = new NotificationMessage(NOTIFICATION, message);
+        connections.broadcast(null, gameID, notification);
     }
 
     private void leave(Session session, String username) throws IOException {
