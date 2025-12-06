@@ -13,7 +13,7 @@ import java.util.Locale;
 public class ServerFacade {
     private final HttpClient client = HttpClient.newHttpClient();
     public final String serverUrl;
-    private String authToken;
+    public String authToken;
 
     public ServerFacade(String host, int port) {
         serverUrl = String.format(Locale.getDefault(), "http://%s:%d", host, port);

@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
+import client.websocket.NotificationHandler;
 import dataaccess.DataAccessException;
 import model.GameData;
 import model.requestresult.JoinRequest;
@@ -12,10 +13,11 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 import client.websocket.WebSocketFacade;
+import websocket.messages.ServerMessage;
 
 import static ui.EscapeSequences.*;
 
-public class GameplayClient {
+public class GameplayClient implements NotificationHandler {
     private int gameID;
     private ServerFacade serverFacade;
     private String username;
@@ -32,7 +34,7 @@ public class GameplayClient {
         this.gameID = game.gameID();
         background = SET_BG_COLOR_BLACK;
         this.teamColor = teamColor;
-        ws.connect();
+        connect();
     }
 
     public void run() {
@@ -56,7 +58,7 @@ public class GameplayClient {
     }
 
     private void connect() {
-        ws.connect();
+        ws.connect(serverFacade.authToken, gameID);
     }
 
     private void printPrompt() {
@@ -80,6 +82,30 @@ public class GameplayClient {
         } catch (Throwable e) {
             return e.getMessage();
         }
+    }
+
+    private String highlight(String [] params) throws DataAccessException {
+        if (params.length == 1) {
+            ws.highlight();
+        }
+        throw new RuntimeException("Invalid input.");
+    }
+
+    private String resign() {
+        ws.resign();
+        return String.format("You left the game");
+    }
+
+    private String move(String[] params) throws DataAccessException {
+        if (params.length == 2) {
+            ws.move();
+        }
+        throw new RuntimeException("Invalid input");
+    }
+
+    private String leave() {
+        ws.leave();
+        return String.format("You left the game");
     }
 
     private String redraw() {
@@ -196,5 +222,11 @@ public class GameplayClient {
                 case PAWN -> BLACK_PAWN;
             };
         }
+    }
+
+    @Override
+    public void notify(ServerMessage notification) {
+        System.out.println(notification);
+        printPrompt();
     }
 }

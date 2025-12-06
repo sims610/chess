@@ -1,5 +1,6 @@
 package client;
 
+import dataaccess.DataAccessException;
 import model.GameData;
 import model.requestresult.*;
 
@@ -112,7 +113,11 @@ public class PostloginClient {
             GameData game = gameIDs.get(gameNum - 1);
             JoinRequest joinRequest = new JoinRequest(teamcolor, gameIDs.get(gameNum - 1).gameID(), username);
             JoinResult result = serverFacade.joinGame(joinRequest);
-            new GameplayClient(serverFacade, game, username, joinRequest.playerColor()).run();
+            try {
+                new GameplayClient(serverFacade, game, username, joinRequest.playerColor()).run();
+            } catch (DataAccessException ex) {
+                throw new RuntimeException("Couldn't connect to the game");
+            }
         }
         return String.format("Joined game as %s", teamcolor);
     }
@@ -129,7 +134,11 @@ public class PostloginClient {
                 throw new RuntimeException("Invalid number. Please choose a valid game number.");
             }
             GameData game = gameIDs.get(gameNum - 1);
-            new GameplayClient(serverFacade, game, username, null).run();
+            try {
+                new GameplayClient(serverFacade, game, username, null).run();
+            } catch (DataAccessException ex) {
+                throw new RuntimeException("Unable to connect to the game");
+            }
         }
         return "Observed game";
     }
