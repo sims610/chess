@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.GameData;
 import model.requestresult.JoinRequest;
 import model.requestresult.JoinResult;
@@ -17,4 +18,6 @@ public interface GameDAO {
     JoinResult joinGame(JoinRequest joinRequest, String username) throws DataAccessException;
 
     GameData read(Integer gameID) throws DataAccessException;
+
+    GameData makeMove(int gameID, ChessGame game) throws DataAccessException;
 }

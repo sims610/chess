@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.GameData;
 import model.requestresult.JoinRequest;
 import model.requestresult.JoinResult;
@@ -63,6 +64,11 @@ public class MemoryGameDAO implements GameDAO {
                 return gameData;
             }
         }
+        return null;
+    }
+
+    @Override
+    public GameData makeMove(int gameID, ChessGame game) throws DataAccessException {
         return null;
     }
 }

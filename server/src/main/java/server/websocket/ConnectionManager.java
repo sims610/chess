@@ -25,6 +25,14 @@ public class ConnectionManager {
         }
     }
 
+    public void sendToClient(Session session, ServerMessage notification) throws IOException {
+        String msg = notification.toString();
+
+        if (session.isOpen()) {
+            session.getRemote().sendString(msg);
+        }
+    }
+
     public void broadcast(Session excludeSession, int gameID, ServerMessage notification) throws IOException {
         Set<Session> set = connections.get(gameID);
 
