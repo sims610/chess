@@ -192,4 +192,18 @@ public class MySQLGameDAO implements GameDAO {
             throw new DataAccessException("Error: Unable to configure database.", ex);
         }
     }
+
+    public void leaveGame(int gameID, boolean white, String username) throws DataAccessException {
+        var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game WHERE gameID=?;";
+        GameData gameData = queryGame(statement, gameID);
+        GameData updatedGameData;
+        if (white) {
+            updatedGameData = new GameData(gameID, null, gameData.blackUsername(), gameData.gameName(), gameData.game());
+        } else {
+            updatedGameData = new GameData(gameID, gameData.whiteUsername(), null, gameData.gameName(), gameData.game());
+        }
+        deleteGame(gameData.gameID());
+        var statement2 = "INSERT INTO `game`(`gameID`, `whiteUsername`, `blackUsername`, `gameName`, `game`) VALUES (?, ?, ?, ?, ?);";
+        executeUpdate(statement2, updatedGameData);
+    }
 }

@@ -67,7 +67,21 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.broadcast(null, gameID, notification);
     }
 
-    private void leave(Session session, String username) throws IOException {
+    private void leave(Session session, String username) throws IOException, DataAccessException {
+        GameData gameData = getGame(gameID);
+        ChessGame game = gameData.game();
+        var loadGame = new LoadGameMessage(LOAD_GAME, game);
+        boolean player = false;
+        boolean white = false;
+        if (Objects.equals(gameData.whiteUsername(), username)) {
+            player = true;
+            white = true;
+        } else if (Objects.equals(gameData.blackUsername(), username)) {
+            player = true;
+        }
+        if (player) {
+            gameDAO.leaveGame(gameID, white, username);
+        }
         var message = String.format("%s left the game", username);
         var notification = new NotificationMessage(NOTIFICATION, message);
         connections.broadcast(session, gameID, notification);
