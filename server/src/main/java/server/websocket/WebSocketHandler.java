@@ -73,9 +73,8 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             player = true;
         }
         if (player) {
-            if (game.getTeamTurn() != null) {
-                game.setTeamTurn(null);
-                System.out.println(game.getTeamTurn());
+            if (game != null) {
+                game = null;
                 gameDAO.endGame(gameID, game);
                 var message = String.format("%s resigned from the game", username);
                 var notification = new NotificationMessage(NOTIFICATION, message);
