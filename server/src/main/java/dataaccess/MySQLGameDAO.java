@@ -206,4 +206,14 @@ public class MySQLGameDAO implements GameDAO {
         var statement2 = "INSERT INTO `game`(`gameID`, `whiteUsername`, `blackUsername`, `gameName`, `game`) VALUES (?, ?, ?, ?, ?);";
         executeUpdate(statement2, updatedGameData);
     }
+
+    public void endGame(int gameID, ChessGame game) throws DataAccessException {
+        var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game WHERE gameID=?;";
+        GameData gameData = queryGame(statement, gameID);
+        GameData updatedGameData;
+        updatedGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+        deleteGame(gameData.gameID());
+        var statement2 = "INSERT INTO `game`(`gameID`, `whiteUsername`, `blackUsername`, `gameName`, `game`) VALUES (?, ?, ?, ?, ?);";
+        executeUpdate(statement2, updatedGameData);
+    }
 }

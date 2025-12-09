@@ -61,10 +61,33 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         return authdata.username();
     }
 
-    private void resign(Session session, String username) throws IOException {
-        var message = String.format("%s resigned from the game", username);
-        var notification = new NotificationMessage(NOTIFICATION, message);
-        connections.broadcast(null, gameID, notification);
+    private void resign(Session session, String username) throws IOException, DataAccessException {
+        GameData gameData = getGame(gameID);
+        ChessGame game = gameData.game();
+        boolean player = false;
+        if (Objects.equals(gameData.whiteUsername(), username)) {
+            player = true;
+        } else if (Objects.equals(gameData.blackUsername(), username)) {
+            player = true;
+        }
+        if (player) {
+            if (game.getTeamTurn() != null) {
+                game.setTeamTurn(null);
+                System.out.println(game.getTeamTurn());
+                gameDAO.endGame(gameID, game);
+                var message = String.format("%s resigned from the game", username);
+                var notification = new NotificationMessage(NOTIFICATION, message);
+                connections.broadcast(null, gameID, notification);
+            } else {
+                String msg = String.format("Error: cannot resign", username);
+                var error = new ErrorMessage(ERROR, msg);
+                connections.sendToClient(session, error);
+            }
+        } else {
+            String msg = String.format("Error: %s is not a player", username);
+            var error = new ErrorMessage(ERROR, msg);
+            connections.sendToClient(session, error);
+        }
     }
 
     private void leave(Session session, String username) throws IOException, DataAccessException {
