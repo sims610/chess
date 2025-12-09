@@ -15,12 +15,14 @@ import org.eclipse.jetty.websocket.api.Session;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Objects;
 
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
+import static chess.ChessGame.TeamColor.WHITE;
 import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsCloseHandler {
@@ -111,16 +113,79 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.leave(gameID, session);
     }
 
-    private void make_move(Session session, String cmessage, String username) throws InvalidMoveException, DataAccessException, IOException {
-        MakeMoveCommand command = new Gson().fromJson(cmessage, MakeMoveCommand.class);
-        GameData gameData = getGame(gameID);
+    private void make_move(Session session, String cmessage, String username) throws IOException {
+        try {
+            MakeMoveCommand command = new Gson().fromJson(cmessage, MakeMoveCommand.class);
+            GameData gameData = getGame(gameID);
+            ChessGame game = gameData.game();
+            chess.ChessMove move = command.move();
+            if (isValidMove(gameData, move, username)) {
+                game.makeMove(move);
+                gameDAO.makeMove(gameID, game);
+                var loadGame = new LoadGameMessage(LOAD_GAME, game);
+                connections.broadcast(null, gameID, loadGame);
+                var message = String.format("%s moved from %s to %s", username, command.move().getStartPosition(), command.move().getEndPosition());
+                var notification = new NotificationMessage(NOTIFICATION, message);
+                connections.broadcast(session, gameID, notification);
+                ChessGame.TeamColor otherTeamColor = getOtherTeamColor(gameData, username);
+                if (game.isInCheckmate(otherTeamColor)) {
+                    message = String.format("CHECKMATE! %s wins", username);
+                    notification = new NotificationMessage(NOTIFICATION, message);
+                    connections.broadcast(null, gameID, notification);
+                } else if (game.isInCheck(otherTeamColor)) {
+                    message = String.format("CHECK");
+                    notification = new NotificationMessage(NOTIFICATION, message);
+                    connections.broadcast(null, gameID, notification);
+                } else if (game.isInStalemate(otherTeamColor)) {
+                    message = String.format("STALEMATE! It's a tie", username);
+                    notification = new NotificationMessage(NOTIFICATION, message);
+                    connections.broadcast(null, gameID, notification);
+                }
+            } else {
+                String msg = String.format("Error: Invalidmove");
+                var error = new ErrorMessage(ERROR, msg);
+                connections.sendToClient(session, error);
+            }
+        } catch (Exception e) {
+            String msg = String.format("Error: %s", e.getMessage());
+            var error = new ErrorMessage(ERROR, msg);
+            connections.sendToClient(session, error);
+        }
+    }
+
+    private ChessGame.TeamColor getOtherTeamColor(GameData gameData, String username) {
+        if (Objects.equals(gameData.whiteUsername(), username)) {
+            return ChessGame.TeamColor.BLACK;
+        } else {
+            return WHITE;
+        }
+    }
+
+    private boolean isValidMove(GameData gameData, ChessMove move, String username) {
+        boolean isValid = true;
+        boolean player = false;
+        boolean white = false;
         ChessGame game = gameData.game();
-        chess.ChessMove move = command.move();
-        game.makeMove(move);
-        gameDAO.makeMove(gameID, game);
-        var message = String.format("%s moved from %s to %s", username, command.move().getStartPosition(), command.move().getEndPosition());
-        var notification = new NotificationMessage(NOTIFICATION, message);
-        connections.broadcast(session, gameID, notification);
+        if (Objects.equals(gameData.whiteUsername(), username)) {
+            player = true;
+            white = true;
+        } else if (Objects.equals(gameData.blackUsername(), username)) {
+            player = true;
+        }
+        if (!player) {
+            return false;
+        }
+        if (white) {
+            if (game.getTeamTurn() != WHITE) {
+                return false;
+            }
+        } else {
+            if (game.getTeamTurn() != ChessGame.TeamColor.BLACK) {
+                return false;
+            }
+        }
+        Collection<ChessMove> validMoves = game.validMoves(move.getStartPosition());
+        return validMoves.contains(move);
     }
 
     private GameData getGame(int gameID) throws DataAccessException {
