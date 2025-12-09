@@ -3,7 +3,6 @@ package server.websocket;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
-import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.MySQLAuthDAO;
@@ -46,7 +45,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
 
             switch (command.getCommandType()) {
                 case CONNECT -> connect(ctx.session, username);
-                case MAKE_MOVE -> make_move(ctx.session, ctx.message(), username);
+                case MAKE_MOVE -> makeMove(ctx.session, ctx.message(), username);
                 case LEAVE -> leave(ctx.session, username);
                 case RESIGN -> resign(ctx.session, username);
             }
@@ -112,7 +111,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         connections.leave(gameID, session);
     }
 
-    private void make_move(Session session, String cmessage, String username) throws IOException {
+    private void makeMove(Session session, String cmessage, String username) throws IOException {
         try {
             MakeMoveCommand command = new Gson().fromJson(cmessage, MakeMoveCommand.class);
             GameData gameData = getGame(gameID);
