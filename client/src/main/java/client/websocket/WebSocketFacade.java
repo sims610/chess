@@ -2,7 +2,6 @@ package client.websocket;
 
 import chess.ChessMove;
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import jakarta.websocket.*;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
@@ -21,9 +20,8 @@ public class WebSocketFacade extends Endpoint {
 
     Session session;
     NotificationHandler notificationHandler;
-    String authToken;
 
-    public WebSocketFacade(String url, NotificationHandler notificationHandler) throws DataAccessException {
+    public WebSocketFacade(String url, NotificationHandler notificationHandler) {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
@@ -54,7 +52,7 @@ public class WebSocketFacade extends Endpoint {
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
-            throw new DataAccessException(500, ex.getMessage());
+            System.out.println("Error: Notification not sent");
         }
     }
 

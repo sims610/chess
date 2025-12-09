@@ -1,9 +1,7 @@
 package client;
 
-import dataaccess.DataAccessException;
 import model.GameData;
 import model.requestresult.*;
-
 import java.util.*;
 
 public class PostloginClient {
@@ -115,8 +113,8 @@ public class PostloginClient {
             JoinResult result = serverFacade.joinGame(joinRequest);
             try {
                 new GameplayClient(serverFacade, game, username, joinRequest.playerColor()).run();
-            } catch (DataAccessException ex) {
-                throw new RuntimeException("Couldn't connect to the game");
+            } catch (Exception e) {
+                throw new RuntimeException("Couldn't join game");
             }
         }
         return String.format("");
@@ -136,7 +134,7 @@ public class PostloginClient {
             GameData game = gameIDs.get(gameNum - 1);
             try {
                 new GameplayClient(serverFacade, game, username, null).run();
-            } catch (DataAccessException ex) {
+            } catch (Exception ex) {
                 throw new RuntimeException("Unable to connect to the game");
             }
         }

@@ -2,7 +2,6 @@ package client;
 
 import chess.*;
 import client.websocket.NotificationHandler;
-import dataaccess.DataAccessException;
 import model.GameData;
 
 import java.util.*;
@@ -26,7 +25,7 @@ public class GameplayClient implements NotificationHandler {
     private String teamColor;
     private final WebSocketFacade ws;
 
-    public GameplayClient(ServerFacade serverFacade, GameData game, String username, String teamColor) throws DataAccessException {
+    public GameplayClient(ServerFacade serverFacade, GameData game, String username, String teamColor) {
         this.serverFacade = serverFacade;
         ws = new WebSocketFacade(this.serverFacade.serverUrl, this);
         this.username = username;
@@ -103,7 +102,7 @@ public class GameplayClient implements NotificationHandler {
         return "resign";
     }
 
-    private String move(String... params) throws DataAccessException {
+    private String move(String... params) {
         if (params.length == 2 || params.length == 3) {
             String start = params[0];
             String end = params[1];
