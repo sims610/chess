@@ -213,15 +213,7 @@ public class GameplayClient implements NotificationHandler {
         for (int i = 8; i > 0; i--) {
             printSide(sides[i-1]);
             for (int j = 1; j < 9; j++) {
-                ChessPiece piece = board.getPiece(new ChessPosition(i, j));
-                boolean highlight = false;
-                if (validMoves != null) {
-                    if (validPlaces.contains(new ChessPosition(i, j))) {
-                        highlight = true;
-                    }
-                }
-                System.out.print(setBackground(highlight));
-                System.out.print(addPiece(piece));
+                printPieces(board, validPlaces, i, j);
             }
             System.out.print(SET_BG_COLOR_LIGHT_GREY + sides[i-1]);
             System.out.print(RESET_BG_COLOR + "\n");
@@ -232,6 +224,18 @@ public class GameplayClient implements NotificationHandler {
 
     private void printSide(String side) {
         System.out.print(SET_BG_COLOR_LIGHT_GREY + side);
+    }
+
+    private void printPieces(ChessBoard board, Collection<ChessPosition> validPlaces, int i, int j) {
+        ChessPiece piece = board.getPiece(new ChessPosition(i, j));
+        boolean highlight = false;
+        if (!validPlaces.isEmpty()) {
+            if (validPlaces.contains(new ChessPosition(i, j))) {
+                highlight = true;
+            }
+        }
+        System.out.print(setBackground(highlight));
+        System.out.print(addPiece(piece));
     }
 
     private void printBlackBoard(Collection<ChessMove> validMoves) {
@@ -248,15 +252,7 @@ public class GameplayClient implements NotificationHandler {
         for (int i = 1; i < 9; i++) {
             printSide(sides[i - 1]);
             for (int j = 8; j > 0; j--) {
-                ChessPiece piece = board.getPiece(new ChessPosition(i, j));
-                boolean highlight = false;
-                if (validMoves != null) {
-                    if (validPlaces.contains(new ChessPosition(i, j))) {
-                        highlight = true;
-                    }
-                }
-                System.out.print(setBackground(highlight));
-                System.out.print(addPiece(piece));
+                printPieces(board, validPlaces, i, j);
             }
             System.out.print(SET_BG_COLOR_LIGHT_GREY + sides[i - 1]);
             System.out.print(RESET_BG_COLOR + "\n");
