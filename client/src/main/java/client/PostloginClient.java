@@ -119,7 +119,7 @@ public class PostloginClient {
                 throw new RuntimeException("Couldn't connect to the game");
             }
         }
-        return String.format("Joined game as %s", teamcolor);
+        return String.format("");
     }
 
     private String observe(String... params) {
@@ -140,7 +140,7 @@ public class PostloginClient {
                 throw new RuntimeException("Unable to connect to the game");
             }
         }
-        return "Observed game";
+        return "";
     }
 
     private String logout() {

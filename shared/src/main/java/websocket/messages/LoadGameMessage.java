@@ -4,7 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 
 public class LoadGameMessage extends ServerMessage{
-    ChessGame game;
+    public ChessGame game;
     public LoadGameMessage(ServerMessageType type, ChessGame game) {
         super(type);
         this.game = game;

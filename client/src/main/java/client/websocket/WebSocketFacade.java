@@ -1,9 +1,13 @@
 package client.websocket;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import jakarta.websocket.*;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
@@ -37,14 +41,16 @@ public class WebSocketFacade extends Endpoint {
                     NotificationMessage thing = null;
                     switch (notification.getServerMessageType()) {
                         case LOAD_GAME -> {
+                            notification = new Gson().fromJson(message, LoadGameMessage.class);
                         }
                         case ERROR -> {
+                            notification = new Gson().fromJson(message, ErrorMessage.class);
                         }
                         case NOTIFICATION -> {
-                            thing = new Gson().fromJson(message, NotificationMessage.class);
+                            notification = new Gson().fromJson(message, NotificationMessage.class);
                         }
                     }
-                    notificationHandler.notify(thing);
+                    notificationHandler.notify(notification);
                 }
             });
         } catch (DeploymentException | IOException | URISyntaxException ex) {
@@ -75,9 +81,9 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void move(String authToken, int gameID) {
+    public void move(String authToken, int gameID, ChessMove move) {
         try {
-            var command = new UserGameCommand(RESIGN, authToken, gameID);
+            var command = new MakeMoveCommand(MAKE_MOVE, authToken, gameID, move);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (IOException ex) {
             throw new RuntimeException("Could not parse");

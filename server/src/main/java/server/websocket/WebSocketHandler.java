@@ -117,13 +117,15 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             MakeMoveCommand command = new Gson().fromJson(cmessage, MakeMoveCommand.class);
             GameData gameData = getGame(gameID);
             ChessGame game = gameData.game();
-            chess.ChessMove move = command.move();
+            ChessMove move = command.move();
             if (isValidMove(gameData, move, username)) {
                 game.makeMove(move);
                 gameDAO.makeMove(gameID, game);
                 var loadGame = new LoadGameMessage(LOAD_GAME, game);
                 connections.broadcast(null, gameID, loadGame);
-                var message = String.format("%s moved from %s to %s", username, command.move().getStartPosition(), command.move().getEndPosition());
+                String start = getPosition(command.move().getStartPosition());
+                String end = getPosition(command.move().getEndPosition());
+                var message = String.format("%s moved from %s to %s", username, start, end);
                 var notification = new NotificationMessage(NOTIFICATION, message);
                 connections.broadcast(session, gameID, notification);
                 ChessGame.TeamColor otherTeamColor = getOtherTeamColor(gameData, username);
@@ -132,23 +134,52 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
                     notification = new NotificationMessage(NOTIFICATION, message);
                     connections.broadcast(null, gameID, notification);
                 } else if (game.isInCheck(otherTeamColor)) {
-                    message = String.format("CHECK");
+                    String otherPlayer = getOtherPlayer(username, gameData);
+                    message = String.format("%s is in CHECK", otherPlayer);
                     notification = new NotificationMessage(NOTIFICATION, message);
                     connections.broadcast(null, gameID, notification);
                 } else if (game.isInStalemate(otherTeamColor)) {
-                    message = String.format("STALEMATE! It's a tie", username);
+                    message = "STALEMATE! It's a tie";
                     notification = new NotificationMessage(NOTIFICATION, message);
                     connections.broadcast(null, gameID, notification);
                 }
             } else {
-                String msg = String.format("Error: Invalidmove");
+                String msg = String.format("Error: Invalid Move");
                 var error = new ErrorMessage(ERROR, msg);
                 connections.sendToClient(session, error);
             }
         } catch (Exception e) {
-            String msg = String.format("Error: %s", e.getMessage());
+            String msg = ("Error: Invalid Move");
             var error = new ErrorMessage(ERROR, msg);
             connections.sendToClient(session, error);
+        }
+    }
+
+    private String getPosition(ChessPosition position) {
+        var col = getCol(position.getColumn());
+        var row = position.getRow();
+        return col + row;
+    }
+
+    private String getCol(int column) {
+        return switch (column) {
+            case 1 -> "a";
+            case 2 -> "b";
+            case 3 -> "c";
+            case 4 -> "d";
+            case 5 -> "e";
+            case 6 -> "f";
+            case 7 -> "g";
+            case 8 -> "h";
+            default -> throw new IllegalStateException("Error: Unexpected value: " + column);
+        };
+    }
+
+    private String getOtherPlayer(String username, GameData gameData) {
+        if (Objects.equals(gameData.whiteUsername(), username)) {
+            return gameData.blackUsername();
+        } else {
+            return gameData.whiteUsername();
         }
     }
 
@@ -191,7 +222,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
         return gameDAO.read(gameID);
     }
 
-    private void connect(Session session, String username) throws IOException, DataAccessException {
+    private void connect(Session session, String username) throws IOException {
         try {
             GameData gameData = getGame(gameID);
             ChessGame game = gameData.game();
@@ -210,7 +241,7 @@ public class WebSocketHandler implements WsConnectHandler, WsMessageHandler, WsC
             var notification = new NotificationMessage(NOTIFICATION, message);
             connections.broadcast(session, gameID, notification);
         } catch (Exception e) {
-            String msg = String.format("Error: %s", e.getMessage());
+            String msg = ("Error: Unable to connect");
             var error = new ErrorMessage(ERROR, msg);
             connections.sendToClient(session, error);
         }

@@ -3,7 +3,7 @@ package websocket.messages;
 import com.google.gson.Gson;
 
 public class ErrorMessage extends ServerMessage {
-    String errorMessage;
+    public String errorMessage;
 
     public ErrorMessage(ServerMessageType type, String msg) {
         super(type);
