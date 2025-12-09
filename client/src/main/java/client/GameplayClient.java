@@ -85,7 +85,7 @@ public class GameplayClient implements NotificationHandler {
         }
     }
 
-    private String highlight(String [] params) throws DataAccessException {
+    private String highlight(String [] params) {
         if (params.length == 1) {
             ws.highlight();
         }
@@ -94,7 +94,7 @@ public class GameplayClient implements NotificationHandler {
 
     private String resign() {
         ws.resign(serverFacade.authToken, gameID);
-        return String.format("You left the game");
+        return "You left the game";
     }
 
     private String move(String[] params) throws DataAccessException {
@@ -235,7 +235,7 @@ public class GameplayClient implements NotificationHandler {
                 System.out.println(notification.getServerMessageType());
             }
             case NOTIFICATION -> {
-                System.out.println(((NotificationMessage) notification).msg);
+                System.out.println(((NotificationMessage) notification).message);
             }
             default -> {
                 System.out.println(notification);
